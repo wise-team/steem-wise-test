@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 IMAGE=gradle:4.9-jdk8
-CMD="ls && gradle -i clean test"
+CMD="git --version && ls && gradle -i clean test"
 
 WORKDIR="/app"
 VOLUME_WORKDIR="${PWD}:$WORKDIR"

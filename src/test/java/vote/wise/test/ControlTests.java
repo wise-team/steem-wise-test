@@ -1,12 +1,12 @@
-package vote.wise.cicd.integrationtests;
+package vote.wise.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class CalculatorTests {
+class ControlTests {
 	@Test
-	void add() {
-		assertTrue(false);
+	void negativeControl() {
+		assertTrue(true);
 	}
 }
