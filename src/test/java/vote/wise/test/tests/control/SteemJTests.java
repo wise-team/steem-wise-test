@@ -30,10 +30,11 @@ class SteemJTests {
     @Test
     void returnsAccountHistory() throws SteemResponseException, SteemCommunicationException {
         SteemJ steemJ = new SteemJ();
-        Map<Integer, AppliedOperation> history = steemJ.getAccountHistory(new AccountName("noisy"), 0, 1000);
+        Map<Integer, AppliedOperation> history = steemJ.getAccountHistory(new AccountName("noisy"), -1, 1000);
 
         long wiseOpsCount = history.values().stream().map(ao -> ao.getOp()).filter(op -> op instanceof CustomJsonOperation)
-                .map(op -> (CustomJsonOperation) op).filter(op -> op.getId() == "wise").count();
+                .map(op -> (CustomJsonOperation) op).filter(op -> op.getId().equals("wise")).count();
+
         assertTrue(wiseOpsCount > 0);
     }
 }

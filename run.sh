@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e # fail on first error
-set -x
 
 ###
 ### Remember, you have to build the image first.
