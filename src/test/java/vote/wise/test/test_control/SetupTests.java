@@ -1,6 +1,7 @@
 package vote.wise.test;
 
 import org.junit.jupiter.api.*;
+import vote.wise.test.config.Env;
 import vote.wise.test.config.StaticConfig;
 import vote.wise.test.docker.Setup;
 
@@ -29,6 +30,18 @@ class SetupTests {
                 String out = setup.exec( "git --version");
                 assertTrue(out.toLowerCase().contains("git version"));
             }),
+            dynamicTest("Config.sh is loaded in exec context", () -> {
+                String out = setup.exec( "echo \"$WISETEST_CONFIG_LOADED\"");
+                assertEquals(out.trim().toLowerCase(), "yes", "Output of echo $WISETEST_CONFIG_LOADED");
+            }),
+            dynamicTest("Config.sh is loaded in System.getenv context", () -> {
+                assertEquals(System.getenv("WISETEST_CONFIG_LOADED"), "yes", "WISETEST_CONFIG_LOADED equals yes");
+            }),
+                dynamicTest("All ENV exists in System.getenv context", () -> {
+                    for (Env e : Env.values()) {
+                        assertTrue(e.get().length() > 0, e.name() + " has length > 0");
+                    }
+                }),
             dynamicTest("Cleans up the directory", () -> {
                 setup.clean();
                 assertFalse(setup.getSetupPath().toFile().exists(), "Setup file exists");
