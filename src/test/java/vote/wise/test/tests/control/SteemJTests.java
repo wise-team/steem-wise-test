@@ -1,4 +1,4 @@
-package vote.wise.test.test_control;
+package vote.wise.test.tests.control;
 
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.base.models.AccountName;

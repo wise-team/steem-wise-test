@@ -1,4 +1,4 @@
-package vote.wise.test.test_control;
+package vote.wise.test.tests.control;
 
 import static org.junit.jupiter.api.Assertions.*;
 
