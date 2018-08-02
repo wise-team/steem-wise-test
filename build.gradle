@@ -20,6 +20,15 @@ dependencies {
 	testCompile 'com.palantir.docker.compose:docker-compose-rule-junit4:0.34.0'
 }
 
+sourceSets {
+	test {
+		java {
+			srcDirs 'src/test'
+			srcDirs 'lib/steem-java-api-wrapper/core/src/main/java'
+		}
+	}
+}
+
 test {
 	useJUnitPlatform()
 

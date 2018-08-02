@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import vote.wise.test.config.StaticConfig;
 
 public class Setup {
     private final Path setupPath = Paths.get("build", "setup-" + System.currentTimeMillis());
@@ -45,7 +46,7 @@ public class Setup {
         cmdParts.add("-o");
         cmdParts.add("pipefail");
         cmdParts.add("-c");
-        cmdParts.add("cd " + setupPath.toFile().getAbsolutePath() + " && " + cmd);
+        cmdParts.add(StaticConfig.CONFIG_SH_PATH.toString() + " && cd " + setupPath.toFile().getAbsolutePath() + " && " + cmd);
 
         String cmdStr = Joiner.on(" ").join(cmdParts.toArray());
 

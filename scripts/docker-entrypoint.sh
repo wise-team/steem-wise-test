@@ -5,6 +5,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ## Load config
 source "${DIR}/../config.sh"
+if [ -z "$WISETEST_CONFIG_LOADED" ]; then echo "Config not loaded. Exiting" && exit 1; fi
+
 
 if [ ! -d "${REPOSITORIES_DIR}" ]; then
     echo "${REPOSITORIES_DIR} does not exist. Exiting"
@@ -27,4 +29,4 @@ if [ ! -d "${REPOSITORIES_DIR}/${REPO_DIRNAME_VOTER_PAGE}" ]; then
 fi
 
 ## Compile & run tests
-gradle -i clean test
+gradle clean test

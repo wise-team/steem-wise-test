@@ -11,6 +11,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ## Load config
 source "${DIR}/config.sh"
+if [ -z "$WISETEST_CONFIG_LOADED" ]; then echo "Config not loaded. Exiting" && exit 1; fi
 
 ####
 ## Docker & gradle settings

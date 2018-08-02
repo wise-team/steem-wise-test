@@ -1,4 +1,4 @@
-package vote.wise.test;
+package vote.wise.test.test_control;
 
 import org.junit.jupiter.api.*;
 import vote.wise.test.config.Env;

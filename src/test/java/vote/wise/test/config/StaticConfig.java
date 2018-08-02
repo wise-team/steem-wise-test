@@ -1,5 +1,8 @@
 package vote.wise.test.config;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class StaticConfig {
-    public static final String STEEM_WISE_CLI_REPO_CLONE_URL = "https://github.com/noisy-witness/steem-wise-cli.git";
+    public static final Path CONFIG_SH_PATH = Paths.get(".", "config.sh");
 }

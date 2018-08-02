@@ -1,5 +1,4 @@
-package vote.wise.test.cli_cli;
-import static org.junit.jupiter.api.Assertions.*;
+package vote.wise.test.test_cli_cli;
 
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -9,15 +8,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
-
 import com.palantir.docker.compose.DockerComposeRule;
-import com.palantir.docker.compose.connection.waiting.HealthChecks;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import vote.wise.test.config.StaticConfig;
 import vote.wise.test.docker.DockerComposeLoaderExtension;
 import vote.wise.test.docker.Setup;
 
@@ -27,7 +19,7 @@ import java.util.Arrays;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CliCliTests {
-    static long getHeadSteemBlockNum() throws SteemResponseException, SteemCommunicationException {
+    /*static long getHeadSteemBlockNum() throws SteemResponseException, SteemCommunicationException {
         SteemJ steemJ = new SteemJ();
         DynamicGlobalProperty dgp =  steemJ.getDynamicGlobalProperties();
         return dgp.getHeadBlockNumber();
@@ -73,5 +65,5 @@ class CliCliTests {
     @AfterAll
     void afterAll() throws IOException {
         setup.clean();
-    }
+    }*/
 }
