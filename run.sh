@@ -15,7 +15,7 @@ if [ -z "$WISETEST_CONFIG_LOADED" ]; then echo "Config not loaded. Exiting" && e
 ####
 ## Docker & gradle settings
 ####
-IMAGE=gradle:4.9-jdk8
+IMAGE=$DOCKER_IMAGE_NAME
 CMD="pwd && ls && ./scripts/docker-entrypoint.sh"
 
 VOLUME_WORKDIR="${DIR}:${WORKDIR}"
