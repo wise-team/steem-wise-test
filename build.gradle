@@ -27,8 +27,18 @@ sourceSets {
 		java {
 			srcDirs 'src/test'
 		}
+        resources {
+            srcDir 'src/test'
+        }
 	}
 }
+
+task processTestJavaResources(type:ProcessResources) {
+    from sourceSets.test.java.srcDirs
+    into sourceSets.test.output.resourcesDir
+    exclude '**/*.java'
+}
+processTestResources.dependsOn processTestJavaResources
 
 test {
 	useJUnitPlatform()
