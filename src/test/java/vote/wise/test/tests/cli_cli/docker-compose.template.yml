@@ -1,0 +1,13 @@
+version: "3"
+services:
+  wise-daemon:
+    build:
+      context: /repositories/steem-wise-cli
+      dockerfile: Dockerfile
+    command: bash -c "wise sync-rules rules.json && wise daemon"
+    environment:
+      WISE_STEEM_USERNAME: {{delegator-username}}
+      WISE_STEEM_POSTINGWIF: {{delegator-keywif}}
+      WISE_DEFAULT_SYNC_START_BLOCK_NUM: {{head-block-num}}
+    volumes:
+      - /repositories/steem-wise-cli/samples/sample-rules.json:/app/rules.json:ro
