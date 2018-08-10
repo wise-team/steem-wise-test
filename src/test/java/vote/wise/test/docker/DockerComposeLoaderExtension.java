@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 import static com.palantir.docker.compose.connection.waiting.HealthChecks.toHaveAllPortsOpen;
 
 public class DockerComposeLoaderExtension implements BeforeAllCallback, AfterAllCallback, ParameterResolver {
-    private final Path temporaryComposePath = Paths.get("build", "tmp-docker-compose-" + System.currentTimeMillis()+"yml");
+    private final Path temporaryComposePath = Paths.get("build", "tmp-docker-compose-" + System.currentTimeMillis()+".yml");
     private final Callable<String> composeFileFactory;
     private final DockerComposeRule.Builder dockerBuilder;
     private DockerComposeRule docker;
