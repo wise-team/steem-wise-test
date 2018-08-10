@@ -28,8 +28,11 @@ public class Setup {
     }
 
     public void init() throws IOException {
-        System.out.println("Creating " + setupPath);
-        if(!setupPath.toFile().mkdirs()) throw new IOException("Could not create dirs: " + setupPath);
+        if (!setupPath.toFile().exists()) {
+            System.out.println("Creating " + setupPath);
+            if (!setupPath.toAbsolutePath().toFile().mkdirs())
+                throw new IOException("Could not create dirs: " + setupPath.toAbsolutePath().toString());
+        }
     }
 
     public Path putFile(String filename, String contents) throws IOException {
