@@ -2,6 +2,7 @@
 set -e # fail on first error
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+export DOCKER_IMAGE_NAME="steem-wise-test"
 export WORKDIR="/app"
 
 export DEFAULT_REPO_PATH_CORE="${DIR}/../steem-wise-core"
