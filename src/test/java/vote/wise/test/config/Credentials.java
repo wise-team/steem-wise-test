@@ -11,18 +11,18 @@ public class Credentials {
     private static Map<String, String> credentialsMap = new HashMap<>();
     public static Pair<String, String> get(Role role) throws IOException {
         String loginEnvName = "WISE_TEST_" + role.name() + "_LOGIN";
-        String passEnvName = "WISE_TEST_" + role.name() + "PASS";
+        String passEnvName = "WISE_TEST_" + role.name() + "_PASSWORD";
 
         String loginEnv = System.getenv(loginEnvName);
-        if (loginEnv.length() > 0) {
+        if (loginEnv != null && loginEnv.length() > 0) {
             String passEnv = System.getenv(passEnvName);
             if (passEnv.isEmpty()) throw new RuntimeException(loginEnvName + " env is present, but " + passEnvName + " is missing");
             else return Pair.of(loginEnv, passEnv);
         }
         else if(StaticConfig.CREDENTIALS_FILE_PATH.toFile().exists()) {
-            if (Credentials.credentialsMap.isEmpty()) {
+            if (credentialsMap.isEmpty()) {
                 ObjectMapper om = new ObjectMapper();
-                Credentials.credentialsMap.putAll(
+                credentialsMap.putAll(
                         om.readValue(StaticConfig.CREDENTIALS_FILE_PATH.toFile(), new HashMap<String, String>().getClass())
                 );
             }
@@ -30,7 +30,7 @@ public class Credentials {
                 if (!credentialsMap.containsKey(passEnvName)) throw new RuntimeException("In credentials json file: " + loginEnvName + " env is present, but " + passEnvName + " is missing");
                 return Pair.of(credentialsMap.get(loginEnvName), credentialsMap.get(passEnvName));
             }
-            else throw new RuntimeException("Credentials for role" + role.name() + " could not be loaded");
+            else throw new RuntimeException("Credentials for role " + role.name() + " could not be loaded (missing " + loginEnvName + ")");
         }
         else {
             throw new RuntimeException("No source for credentials is present.");
