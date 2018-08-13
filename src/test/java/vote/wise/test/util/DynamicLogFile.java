@@ -27,7 +27,7 @@ public class DynamicLogFile {
                     if (DynamicLogFile.this.listener != null) {
                         if (!DynamicLogFile.this.listener.line(line)) DynamicLogFile.this.listener = null;
                     }
-                    Logger.getLogger(getClass().getName()).info("[" + path.toString() + "]> "+ line);
+                    System.out.println("[" + path.toString() + "]> "+ line);
                     lines.add(line);
                 }
             }
