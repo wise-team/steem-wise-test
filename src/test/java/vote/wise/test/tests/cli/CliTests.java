@@ -1,4 +1,4 @@
-package vote.wise.test.tests.cli_cli;
+package vote.wise.test.tests.cli;
 
 import com.google.common.io.Resources;
 import com.palantir.docker.compose.connection.Container;
@@ -24,15 +24,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static org.assertj.core.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CliCliTests {
-    static final Setup setup = new Setup();
+class CliTests {
+    static final Setup setup = new Setup("cli");
     static final Path logsPath = setup.getSetupPath().resolve("docker-logs");
     static final Path wiseCliLogPath = logsPath.resolve("wise-cli.log");
     static final Path wiseDaemonLogPath = logsPath.resolve("wise-daemon.log");
@@ -47,7 +46,7 @@ class CliCliTests {
 
     static String prepareDockerCompose() throws SteemResponseException, SteemCommunicationException, IOException {
         long headBlockNum = getHeadSteemBlockNum();
-        String template = Resources.asCharSource(Resources.getResource(CliCliTests.class, "docker-compose.template.yml"), StandardCharsets.UTF_8).read();
+        String template = Resources.asCharSource(Resources.getResource(CliTests.class, "docker-compose.template.yml"), StandardCharsets.UTF_8).read();
 
         String newYml = template
                 .replace("{{head-block-num}}", "" + headBlockNum)
