@@ -18,6 +18,9 @@ dependencies {
     testCompile 'org.assertj:assertj-core:3.6.2'
     testCompile 'com.palantir.docker.compose:docker-compose-rule-junit4:0.34.0'
 
+    testCompile 'org.slf4j:slf4j-api:1.7.25'
+    testCompile 'org.slf4j:slf4j-simple:1.7.25'
+    testRuntime 'org.slf4j:slf4j-simple:1.7.25'
     testCompile 'com.google.guava:guava:25.1-jre' // https://google.github.io/guava/releases/25.1-jre/api/docs/
     testCompile 'commons-io:commons-io:2.4'
     testCompile 'com.fasterxml.jackson:jackson-base:2.9.6'
