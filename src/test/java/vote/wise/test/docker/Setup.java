@@ -21,10 +21,12 @@ import com.google.common.io.RecursiveDeleteOption;
 import vote.wise.test.config.StaticConfig;
 
 public class Setup {
-    private final Path setupPath = Paths.get("build", "setup-" + System.currentTimeMillis());
+    private final String name;
+    private final Path setupPath;
 
-    public Setup() {
-
+    public Setup(String name) {
+        this.name = name;
+        this.setupPath = Paths.get("build", "setup-" + name + "-" + System.currentTimeMillis());
     }
 
     public void init() throws IOException {
