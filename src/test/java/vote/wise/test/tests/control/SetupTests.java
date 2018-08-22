@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SetupTests {
-    private final Setup setup = new Setup();
+    private final Setup setup = new Setup("setup-tests");
 
     @TestFactory
     Iterable<DynamicTest> setupTests() {

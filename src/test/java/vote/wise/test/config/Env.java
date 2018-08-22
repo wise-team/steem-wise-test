@@ -9,7 +9,8 @@ public enum Env {
     REPO_DIRNAME_CORE,
     REPO_DIRNAME_CLI,
     REPO_DIRNAME_VOTER_PAGE,
-    WISETEST_CONFIG_LOADED;
+    WISETEST_CONFIG_LOADED,
+    WISE_CLI_REQUIRED_VERSION;
 
     public String get() {
         return System.getenv(this.name());

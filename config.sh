@@ -14,5 +14,6 @@ export REPOSITORIES_DIR="/repositories"
 export REPO_DIRNAME_CORE="steem-wise-core"
 export REPO_DIRNAME_CLI="steem-wise-cli"
 export REPO_DIRNAME_VOTER_PAGE="steem-wise-voter-page"
+export WISE_CLI_REQUIRED_VERSION="0.19.7"
 
 export WISETEST_CONFIG_LOADED="yes"
