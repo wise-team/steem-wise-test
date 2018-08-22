@@ -25,6 +25,7 @@ dependencies {
     testCompile 'commons-io:commons-io:2.4'
     testCompile 'com.fasterxml.jackson:jackson-base:2.9.6'
     testCompile 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
+    testCompile 'com.jayway.jsonpath:json-path:2.3.0'
 
     testCompile files("lib/steem-java-api-wrapper/core/target/steemj-core-0.5.0-SNAPSHOT-jar-with-dependencies.jar")
 }
