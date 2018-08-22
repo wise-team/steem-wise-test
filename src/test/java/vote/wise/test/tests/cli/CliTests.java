@@ -2,7 +2,10 @@ package vote.wise.test.tests.cli;
 
 import com.palantir.docker.compose.execution.*;
 import eu.bittrade.libs.steemj.SteemJ;
+import eu.bittrade.libs.steemj.base.models.AccountName;
+import eu.bittrade.libs.steemj.base.models.AppliedOperation;
 import eu.bittrade.libs.steemj.base.models.DynamicGlobalProperty;
+import eu.bittrade.libs.steemj.base.models.operations.CustomJsonOperation;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,6 +25,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -139,10 +143,24 @@ class CliTests {
                     String out = docker.run(DockerComposeRunOption.options("-T", "-e WISE_STEEM_USERNAME=" + delegator.getLeft(), "-e WISE_STEEM_POSTINGWIF=" + delegator.getRight()),
                                 "wise-cli", DockerComposeRunArgument.arguments("wise", "sync-rules", rules));
 
-                    System.out.println("Sync out:");
+                    System.out.println("'Successfuly synchronises rules' out:");
                     System.out.println(out);
 
+                    assertThat(out).containsIgnoringCase("Done updating rules");
+                    assertThat(out).containsIgnoringCase("2 operations to send");
+
                     TimeUnit.MILLISECONDS.sleep(250);
+                }),
+
+                dynamicTest("Updated rules are present on blockchain", () -> {
+                    Pair<String, String> delegator = Credentials.get(Credentials.Role.STEEM_DELEGATOR_A);
+                    SteemJ steemJ = new SteemJ();
+                    Map<Integer, AppliedOperation> ops = steemJ.getAccountHistory(new AccountName(delegator.getLeft()), -1, 10);
+                    String[] setRulesOps = ops.values().stream()
+                            .filter(op -> op.getOp() instanceof CustomJsonOperation)
+                            .map(op -> (CustomJsonOperation) op.getOp())
+                            .filter(cjop -> cjop.getId().equals("wise")).map(cjop -> cjop.getJson()).filter(json -> json.contains("v2:set_rules")).toArray(String[]::new);
+                    assertThat(setRulesOps.length).isGreaterThanOrEqualTo(2);
                 })
         );
     }
