@@ -1,5 +1,6 @@
 package vote.wise.test.tests.cli;
 
+import com.jayway.jsonpath.JsonPath;
 import com.palantir.docker.compose.execution.*;
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.base.models.AccountName;
@@ -20,6 +21,7 @@ import vote.wise.test.docker.Setup;
 import vote.wise.test.util.DynamicLogFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -27,28 +29,30 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static org.assertj.core.api.Assertions.*;
 import static vote.wise.test.util.TestsUtil.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CliTests {
     static final Setup setup = new Setup("cli");
     static final Path logsPath = setup.getSetupPath().resolve("docker-logs");
-    static final Path wiseCliLogPath = logsPath.resolve("wise-cli.log");
-    static final Path wiseDaemonLogPath = logsPath.resolve("wise-daemon.log");
-    static final DynamicLogFile cliLog = new DynamicLogFile(logsPath);
+    static final Path wiseDaemonLogPath = logsPath.resolve(Constants.CONTAINER_DAEMON + ".log");
     static final DynamicLogFile daemonLog = new DynamicLogFile(wiseDaemonLogPath);
     static final String rulesetSuffix = "-integration-test-" + System.currentTimeMillis();
+    static final Logger log = Logger.getLogger(CliTests.class.getName());
 
     static long getHeadSteemBlockNum() throws SteemResponseException, SteemCommunicationException {
         SteemJ steemJ = new SteemJ();
         DynamicGlobalProperty dgp =  steemJ.getDynamicGlobalProperties();
         return dgp.getHeadBlockNumber();
     }
-    static String processTemplate(String template) throws IOException {
+    static String processTemplate(String template) throws IOException, IllegalAccessException {
         String out = template
                 .replace("{{ruleset-suffix}}", rulesetSuffix);
 
@@ -61,10 +65,14 @@ class CliTests {
             out = out.replace("{{credential-" + r.name() + "-password}}", Credentials.get(r).getRight());
         }
 
+        for (Field f : Constants.class.getFields()) {
+            out = out.replace("{{" + f.getName() + "}}", f.get(null).toString());
+        }
+
         return out;
     }
 
-    static String prepareDockerCompose() throws SteemResponseException, SteemCommunicationException, IOException {
+    static String prepareDockerCompose() throws SteemResponseException, SteemCommunicationException, IOException, IllegalAccessException {
         long headBlockNum = getHeadSteemBlockNum();
         String template = readResource(CliTests.class, "docker-compose.template.yml");
 
@@ -96,12 +104,11 @@ class CliTests {
         List<DynamicTest> tests =  new LinkedList<>();
 
         tests.add(dynamicTest("Log files exists", () -> {
-            assertTrue(wiseCliLogPath.toFile().exists(), wiseCliLogPath + " exists");
             assertTrue(wiseDaemonLogPath.toFile().exists(), wiseDaemonLogPath + " exists");
         }));
 
         tests.add(dynamicTest("Wise cli works and outputs proper wise version " + Env.WISE_CLI_REQUIRED_VERSION.get(), () -> {
-            String out = docker.run(DockerComposeRunOption.options("-T"), "wise-cli", DockerComposeRunArgument.arguments("wise", "--version"));
+            String out = docker.run(DockerComposeRunOption.options("-T"), Constants.CONTAINER_CLI, DockerComposeRunArgument.arguments("wise", "--version"));
             assertEquals(out.trim(), Env.WISE_CLI_REQUIRED_VERSION.get());
             TimeUnit.SECONDS.sleep(1);
         }));
@@ -126,7 +133,7 @@ class CliTests {
                     String voteorder = readResource(getClass(), "invalid-voteorder.json")
                             .replace("{{ruleset-name}}", "nonexistent-ruleset-" + System.currentTimeMillis());
                     try {
-                         docker.run(DockerComposeRunOption.options("-T"), "wise-cli", DockerComposeRunArgument.arguments("wise", "send-voteorder", voteorder));
+                         docker.run(DockerComposeRunOption.options("-T"), Constants.CONTAINER_CLI, DockerComposeRunArgument.arguments("wise", "send-voteorder", voteorder));
                         throw new RuntimeException("Voteorder sending should fail");
                     }
                     catch(DockerExecutionException ex) {
@@ -136,18 +143,19 @@ class CliTests {
                 }),
 
                 dynamicTest("Successfuly synchronises rules", () -> {
+                    daemonLog.markCheckpoint();
+
                     String rules = processTemplate(readResource(getClass(), "rules-1.json"));
 
                     Pair<String, String> delegator = Credentials.get(Credentials.Role.STEEM_DELEGATOR_A);
 
-                    String out = docker.run(DockerComposeRunOption.options("-T", "-e WISE_STEEM_USERNAME=" + delegator.getLeft(), "-e WISE_STEEM_POSTINGWIF=" + delegator.getRight()),
-                                "wise-cli", DockerComposeRunArgument.arguments("wise", "sync-rules", rules));
+                    String out = docker.run(DockerComposeRunOption.options("-T", "-e", "WISE_STEEM_USERNAME=" + delegator.getLeft(), "-e", "WISE_STEEM_POSTINGWIF=" + delegator.getRight()),
+                            Constants.CONTAINER_CLI, DockerComposeRunArgument.arguments("wise", "sync-rules", rules));
 
-                    System.out.println("'Successfuly synchronises rules' out:");
-                    System.out.println(out);
+                    log.info("---\"Successfuly synchronises rules\" output ---\n" + out + "\n---\n");
 
                     assertThat(out).containsIgnoringCase("Done updating rules");
-                    assertThat(out).containsIgnoringCase("2 operations to send");
+                    assertThat(out).containsPattern(Pattern.compile("[2-9] operations to send", Pattern.MULTILINE)); // minimum two operations
 
                     TimeUnit.MILLISECONDS.sleep(250);
                 }),
@@ -161,6 +169,38 @@ class CliTests {
                             .map(op -> (CustomJsonOperation) op.getOp())
                             .filter(cjop -> cjop.getId().equals("wise")).map(cjop -> cjop.getJson()).filter(json -> json.contains("v2:set_rules")).toArray(String[]::new);
                     assertThat(setRulesOps.length).isGreaterThanOrEqualTo(2);
+                }),
+
+                dynamicTest("Updated rules are fetched by the daemon", () -> {
+                    for (int i = 0; i < 5;i++) {
+                        TimeUnit.SECONDS.sleep(1);
+
+                        String [] daemonLogLines = this.daemonLog.getLogLinesSinceCheckpoint();
+                        String [] synchronizerEvents = Arrays.stream(daemonLogLines)
+                                .filter(line -> line.contains("SYNCHRONIZER_EVENT="))
+                                .map(line -> line.split("SYNCHRONIZER_EVENT=")[1])
+                                .toArray(String[]::new);
+                        String [] rulesUpdatedEvents = Arrays.stream(synchronizerEvents)
+                                .map(json -> JsonPath.read(json, "$.type"))
+                                .filter(elem -> elem.equals("rules-updated"))
+                                .toArray(String[]::new);
+                        if(rulesUpdatedEvents.length >= 2 ) return; // passed
+                    }
+                    fail("Updated rules were not fetched");
+
+                }),
+
+                dynamicTest("Does not update rules the second time", () -> {
+                    String rules = processTemplate(readResource(getClass(), "rules-1.json"));
+
+                    Pair<String, String> delegator = Credentials.get(Credentials.Role.STEEM_DELEGATOR_A);
+
+                    String out = docker.run(DockerComposeRunOption.options("-T", "-e WISE_STEEM_USERNAME=" + delegator.getLeft(), "-e WISE_STEEM_POSTINGWIF=" + delegator.getRight()),
+                            Constants.CONTAINER_CLI, DockerComposeRunArgument.arguments("wise", "sync-rules", rules));
+
+                    System.out.println("'Does not update rules the second time' output:");
+                    System.out.println(out);
+                    TimeUnit.MILLISECONDS.sleep(250);
                 })
         );
     }

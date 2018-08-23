@@ -1,6 +1,6 @@
 version: "3"
 services:
-  wise-daemon:
+  {{CONTAINER_DAEMON}}:
     build:
       context: /repositories/steem-wise-cli
       dockerfile: Dockerfile
@@ -9,7 +9,7 @@ services:
       WISE_STEEM_USERNAME: {{credential-STEEM_DELEGATOR_A-login}}
       WISE_STEEM_POSTINGWIF: {{credential-STEEM_DELEGATOR_A-password}}
 
-  wise-cli:
+  {{CONTAINER_CLI}}:
     build:
       context: /repositories/steem-wise-cli
       dockerfile: Dockerfile
