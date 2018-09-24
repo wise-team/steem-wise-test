@@ -1,0 +1,56 @@
+{
+  "name": "steem-wise-test",
+  "version": "1.1.2",
+  "description": "System tests for steem wise",
+  "directories": {},
+  "engines": {
+    "node": ">=9.11"
+  },
+  "dependencies": {
+    "steem-wise-core": "^1.1.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^7.1.2",
+    "@commitlint/config-conventional": "^7.1.2",
+    "@types/bluebird-global": "^3.5.9",
+    "@types/chai": "^4.1.4",
+    "@types/dockerode": "^2.5.5",
+    "@types/get-stream": "^3.0.1",
+    "@types/lodash": "^4.14.116",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^9.6.31",
+    "bluebird-global": "^1.0.1",
+    "chai": "^4.1.2",
+    "dockerode": "^2.5.7",
+    "exit-hook": "^2.0.0",
+    "express": "^4.16.3",
+    "get-stream": "^4.0.0",
+    "husky": "^0.14.3",
+    "mocha": "^5.2.0",
+    "tar-fs": "^1.16.3",
+    "ts-node": "^6.2.0",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
+  },
+  "scripts": {
+    "check": "if ! [[ \"$(node --version)\" = \"$(cat .nvmrc)\"* ]]; then echo \"Node version does not match that in .nvmrc\" && exit 1; fi",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "test": "npm run check && npm run tslint && mocha -r ts-node/register src/tests-entrance.ts",
+    "commitmsg": "commitlint -E GIT_PARAMS"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noisy-witness/steem-wise-test.git"
+  },
+  "author": "Jędrzej Lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/noisy-witness/steem-wise-test/issues"
+  },
+  "homepage": "https://github.com/noisy-witness/steem-wise-test#readme"
+}

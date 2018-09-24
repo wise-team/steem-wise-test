@@ -1,25 +1,12 @@
-credentials.json
-
+# Mac OS X stuff
 .DS_Store
 
-.gradle
-/build/
+# Intelij IDEA IDEs
+/.idea/
 
-# Ignore Gradle GUI config
-gradle-app.setting
+# VS Code
+/.vscode
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Cache of project
-.gradletasknamecache
-
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
-
-# User-specific stuff
-.idea/*
-
-# File-based project format
-*.iws
-*.iml
+## Node
+/dist
+/node_modules
