@@ -8,15 +8,19 @@ import { Config } from "../Config";
 import { Context } from "../Context";
 
 
+
 export default function(config: Config, context: Context) {
     const endpoint = config.sqlEndpointUrl;
 
     describe("Live metrics (tests/live-metrics.test.ts)", () => {
-        let operations: {} [] = [];
+        let operations: any [] = [];
         let properties: { key: string, value: string } [] = [];
 
+        const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - config.liveMetricsPeriodMs)).toISOString();
+        console.log(operationsUrl);
+
         before(
-            () => axios.get(endpoint + "operations")
+            () => axios.get(operationsUrl)
             .then((resp: any) => {
                 expect(resp.data).to.be.an("array").with.length.greaterThan(0);
                 operations = resp.data;
@@ -51,9 +55,20 @@ export default function(config: Config, context: Context) {
             expect(blockSources).to.be.an("array").with.length.greaterThan(1);
         });
 
-        // TODO test if:
-        // > xx% of rejections
-        // > no confirmations
-        // no operations
+        it("There were more than 10 operations in last metrics period", () => {
+            expect(operations).to.be.an("array").with.length.greaterThan(10);
+        });
+
+        it("Less than 20% of confirm_vote were rejections", () => {
+            const confirmVotes = operations.filter((op: any) => op.operation_type === "confirm_vote");
+            const rejections = confirmVotes.map(op => JSON.parse(op.json_str)).filter((confirmVote: any) => !confirmVote.accepted);
+            expect(rejections.length).to.be.lte(confirmVotes.length / 5);
+        });
+
+        it("More than 60% of voteorders are confirmed", () => {
+            const confirmVotes = operations.filter((op: any) => op.operation_type === "confirm_vote");
+            const voteorders = operations.filter((op: any) => op.operation_type === "send_voteorder");
+            expect(confirmVotes.length).to.be.gte(voteorders.length * 0.6);
+        });
     });
 }

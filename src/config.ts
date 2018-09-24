@@ -43,7 +43,7 @@ export class Config {
     };
 
     public sqlEndpointUrl: string = "http://muon.jblew.pl:3000/";
-    public liveMetricsPeriodMs: number = 48 * 3600 * 1000; // 48h
+    public liveMetricsPeriodMs: number = 4 * 24 * 3600 * 1000; // 4 days
 }
 
 export namespace Config {

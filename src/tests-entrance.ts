@@ -35,10 +35,10 @@ describe("Setup environment", function () {
     });
 
     testEnvironmentTests(config, context);
-    configurationTests(config, context);
+    /*configurationTests(config, context);
     coreTests(config, context);
     cliTests(config, context);
     voterPageTests(config, context);
-    sqlTests(config, context);
+    sqlTests(config, context);*/
     liveMetricsTest(config, context);
 });
