@@ -1,6 +1,7 @@
 
 export class Config {
     public requiredNodeJsVersion = "9.11";
+    public skipBuild: boolean = false;
 
     public repositories: { [x: string]: Config.Repository } = {
         core: {
@@ -40,10 +41,16 @@ export class Config {
             nodePath: ""
         }
     };
+
+    public sqlEndpointUrl: string = "http://muon.jblew.pl:3000/";
+    public liveMetricsPeriodMs: number = 48 * 3600 * 1000; // 48h
 }
 
 export namespace Config {
     export interface Repository {
-        path: string; isNode: boolean; isNpm: boolean; nodePath: string;
+        path: string;
+        isNode: boolean;
+        isNpm: boolean;
+        nodePath: string;
     }
 }

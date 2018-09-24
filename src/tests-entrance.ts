@@ -6,6 +6,11 @@ import * as getStream from "get-stream";
 
 import testEnvironmentTests from "./tests/test-environment.test";
 import configurationTests from "./tests/configuration.test";
+import coreTests from "./tests/core.test";
+import cliTests from "./tests/cli.test";
+import voterPageTests from "./tests/voter-page.test";
+import sqlTests from "./tests/sql.test";
+import liveMetricsTest from "./tests/live-metrics.test";
 
 
 const config = new Config();
@@ -29,6 +34,11 @@ describe("Setup environment", function () {
         console.log("------");*/
     });
 
-    testEnvironmentTests(context);
-    configurationTests(context);
+    testEnvironmentTests(config, context);
+    configurationTests(config, context);
+    coreTests(config, context);
+    cliTests(config, context);
+    voterPageTests(config, context);
+    sqlTests(config, context);
+    liveMetricsTest(config, context);
 });

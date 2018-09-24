@@ -14,7 +14,7 @@ export class Container {
         this.imageName = "steem-wise-test-cli-" + Date.now();
     }
 
-    public async buildImage(): Promise<NodeJS.ReadableStream> {
+    /*public async buildImage(): Promise<NodeJS.ReadableStream> {
         const contextDir = this.config.cliPath;
 
         console.log("Building image. Context=" + contextDir + "/Dockerfile");
@@ -24,5 +24,5 @@ export class Container {
                 t: this.imageName
             }
         );
-    }
+    }*/
 }

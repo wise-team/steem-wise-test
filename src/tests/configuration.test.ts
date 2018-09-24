@@ -6,7 +6,8 @@ import * as _ from "lodash";
 import { Context } from "../Context";
 import { Config } from "../config";
 
-export default function(context: Context) {
+
+export default function(config: Config, context: Context) {
     describe("Repositories configuration (tests/configuration.test.ts)", () => {
         _.forOwn(context.getConfig().repositories, (repo: Config.Repository) => {
             it(repo.path + " has LICENSE file", () => {
