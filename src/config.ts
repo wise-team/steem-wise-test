@@ -1,16 +1,49 @@
 
 export class Config {
     public requiredNodeJsVersion = "9.11";
-    public corePath: string = "../steem-wise-core";
-    public cliPath: string = "../steem-wise-cli";
-    public voterPagePath: string = "../steem-wise-voter-page";
-    public manualPath: string = "../steem-wise-manual";
-    public sqlPath: string = "../steem-wise-sql";
-    public testPath: string = "../steem-wise-test";
-    public repositories: string [] = [
-        this.corePath, this.cliPath, this.voterPagePath, this.manualPath, this.sqlPath, this.testPath
-    ];
-    public nodeRepositories: string [] = [
-        this.corePath, this.cliPath, this.voterPagePath, this.sqlPath, this.testPath
-    ];
+
+    public repositories: { [x: string]: Config.Repository } = {
+        core: {
+            path: "../steem-wise-core",
+            isNode: true,
+            isNpm: true,
+            nodePath: ""
+        },
+        cli: {
+            path: "../steem-wise-cli",
+            isNode: true,
+            isNpm: true,
+            nodePath: ""
+        },
+        voterPage: {
+            path: "../steem-wise-voter-page",
+            isNode: false,
+            isNpm: true,
+            nodePath: ""
+        },
+        manual: {
+            path: "../steem-wise-manual",
+            isNode: false,
+            isNpm: false,
+            nodePath: ""
+        },
+        sql: {
+            path: "../steem-wise-sql",
+            isNode: true,
+            isNpm: true,
+            nodePath: "/pusher"
+        },
+        test: {
+            path: "../steem-wise-test",
+            isNode: true,
+            isNpm: true,
+            nodePath: ""
+        }
+    };
+}
+
+export namespace Config {
+    export interface Repository {
+        path: string; isNode: boolean; isNpm: boolean; nodePath: string;
+    }
 }
