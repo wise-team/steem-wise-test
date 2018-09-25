@@ -55,8 +55,8 @@ export default function(config: Config, context: Context) {
             expect(blockSources).to.be.an("array").with.length.greaterThan(1);
         });
 
-        it("There were more than 10 operations in last metrics period", () => {
-            expect(operations).to.be.an("array").with.length.greaterThan(10);
+        it("There were more than 4 operations in last metrics period", () => {
+            expect(operations).to.be.an("array").with.length.gte(4);
         });
 
         it("Less than 20% of confirm_vote were rejections", () => {

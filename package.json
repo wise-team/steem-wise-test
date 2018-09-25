@@ -19,6 +19,7 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^9.6.31",
     "@types/npm": "^2.0.29",
+    "@types/tar-fs": "^1.16.1",
     "axios": "^0.18.0",
     "bluebird-global": "^1.0.1",
     "chai": "^4.1.2",
@@ -37,9 +38,9 @@
     "typescript": "^2.9.2"
   },
   "scripts": {
-    "check": "if ! [[ \"$(node --version)\" = \"$(cat .nvmrc)\"* ]]; then echo \"Node version does not match that in .nvmrc\" && exit 1; fi",
+    "check": "if echo \"$(node --version)\" | grep -q \"$(cat .nvmrc)\"; then echo \"Node version correct\"; else echo \"Node version does not match that in .nvmrc\" && exit 1; fi",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "npm run check && npm run tslint && mocha -r ts-node/register src/tests-entrance.ts",
+    "test": "npm run check && npm run tslint && mocha -r ts-node/register src/entrance.ts",
     "commitmsg": "commitlint -E GIT_PARAMS"
   },
   "commitlint": {
