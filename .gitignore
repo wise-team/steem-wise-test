@@ -10,3 +10,4 @@
 ## Node
 /dist
 /node_modules
+/credentials.yml

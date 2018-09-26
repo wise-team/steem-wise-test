@@ -4,12 +4,13 @@ import * as tar from "tar-fs";
 import * as path from "path";
 import * as fs from "fs";
 import * as getStream from "get-stream";
+import * as BluebirdPromise from "bluebird";
 
 import { Config } from "./config";
 
 export class Container {
     public static KEEP_RUNNING_CMD: string [] = [
-        "/usr/bin/env", "sh", "-c", "while true; do date; sleep 5; done"
+        "/usr/bin/env", "sh", "-c", "while true; do date; sleep 1; done"
     ];
 
     private config: Config;
@@ -96,6 +97,31 @@ export class Container {
             console.log("Container " + this.imageName + " created");
             this.container = container;
             return this.container.start();
+        });
+    }
+
+    public async exec(cmd: string []): Promise<any> {
+        return new BluebirdPromise<any>((resolve, reject) => {
+            if (!this.container) throw new Error("Container not started");
+
+            this.container.exec({Cmd: cmd, AttachStdin: false, AttachStdout: true}, (error: Error, exec: Docker.Exec) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                }
+                else {
+                    exec.start({hijack: false, stdin: false}, (error: Error, stream: any) => {
+                        if (error) {
+                            console.error(error);
+                            reject(error);
+                        }
+                        else {
+                            console.log(stream);
+                            resolve(stream);
+                        }
+                    });
+                }
+            });
         });
     }
 

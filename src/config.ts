@@ -1,4 +1,8 @@
 
+import * as yaml from "js-yaml";
+import * as path from "path";
+import * as fs from "fs";
+
 export class Config {
     public requiredNodeJsVersion = "9.11";
     public skipBuild: boolean = false;
@@ -44,6 +48,24 @@ export class Config {
 
     public sqlEndpointUrl: string = "http://muon.jblew.pl:3000/";
     public liveMetricsPeriodMs: number = 3 * 24 * 3600 * 1000; // 4 days
+
+    public guestAccountCredentials: Config.Credentials = {
+        account: "guest123", postingKey: "5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg"
+    };
+    public credentials: { [role: string]: Config.Credentials } = {
+        delegator: { account: "guest123", postingKey: "5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg" },
+        voter1: { account: "guest123", postingKey: "5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg" },
+        voter2: { account: "guest123", postingKey: "5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg" },
+    };
+    public requiredCredentialRoles: string [] = [ "delegator", "voter1", "voter2" ];
+    public credentialsFilePath = "credentials.yml";
+
+    public constructor() {
+        if (fs.existsSync(this.credentialsFilePath)) {
+            const credentialsFileContents = fs.readFileSync(this.credentialsFilePath, "utf8").toString();
+            this.credentials = yaml.safeLoad(credentialsFileContents);
+        }
+    }
 }
 
 export namespace Config {
@@ -52,5 +74,10 @@ export namespace Config {
         isNode: boolean;
         isNpm: boolean;
         nodePath: string;
+    }
+
+    export interface Credentials {
+        account: string;
+        postingKey: string;
     }
 }

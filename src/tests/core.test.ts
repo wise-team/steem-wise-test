@@ -17,7 +17,6 @@ export default function(config: Config, context: Context) {
                     npm_.prefix = config.repositories.core.path;
                     if (error) reject(error);
                     else npm_.commands["run-script"](["build"], (error: Error | undefined, result: any) => {
-                        console.log("<B> " + JSON.stringify(result));
                         if (error) reject(error);
                         else resolve();
                     });
