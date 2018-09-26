@@ -9,7 +9,9 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe("Steem using steem-js (tests/steem.test.ts)", () => {
+    describe("Steem using steem-js (tests/steem.test.ts)", function () {
+        this.timeout(6000);
+
         it ("Does get_block correctly for an old block", () => {
             const testBlockNum = 26194848;
             return steem.api.getBlockAsync(testBlockNum)
@@ -27,18 +29,16 @@ export default function(config: Config, context: Context) {
 
             return steem.api.getBlockAsync(headBlockNum)
             .then((block: any) => {
-                console.log(JSON.stringify(block, undefined, 2));
                 expect(block.transactions).to.be.an("array").with.length.gt(0);
                 expect(block.transactions[0].block_num).to.be.equal(headBlockNum);
             });
         });
 
         it ("Does get_block correctly for erronous block", async () => {
-            const blockNum = 26256750; // 26256746, 26256747, 26256748, 26256749,   has 0 transactions,
+            const blockNum = 26256750; // 26256746, 26256747, 26256748, 26256749 has 0 transactions,
 
             return steem.api.getBlockAsync(blockNum)
             .then((block: any) => {
-                console.log(JSON.stringify(block, undefined, 2));
                 expect(block.transactions).to.be.an("array").with.length.gt(0);
                 expect(block.transactions[0].block_num).to.be.equal(blockNum);
             });
