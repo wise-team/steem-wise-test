@@ -1,0 +1,24 @@
+- voter: steemprojects1
+  rulesets:
+    - name: Vote WISEly
+      rules:
+        - rule: weight
+          min: 0
+          max: 100
+        - rule: tags
+          mode: require
+          tags:
+            - steemprojects
+    - name: Something else
+      rules:
+        - rule: weight
+          min: 0
+          max: 10000
+        - rule: authors
+          mode: allow
+          authors:
+            - noisy
+- voter: noisy
+  rulesets:
+    - name: 'Support us '
+      rules: []
