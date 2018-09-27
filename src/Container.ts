@@ -3,6 +3,7 @@ import * as exitHook from "exit-hook";
 import * as tar from "tar-fs";
 import * as path from "path";
 import * as fs from "fs";
+import * as stream from "stream";
 import * as getStream from "get-stream";
 import * as BluebirdPromise from "bluebird";
 
@@ -23,6 +24,10 @@ export class Container {
         this.config = config;
         this.imageName = imageName;
         this.docker = new Docker();
+    }
+
+    public getDocker(): Docker {
+        return this.docker;
     }
 
     public async buildImage(contextDir: string): Promise<string> {
@@ -80,10 +85,10 @@ export class Container {
         );
     }
 
-    public async start(cmd: string []) {
+    public async start(cmd: string []): Promise<void> {
         if (this.container) throw new Error("Container already started");
 
-        return this.docker.createContainer({
+        const container = await this.docker.createContainer({
             Image: this.imageName,
             AttachStdin: false,
             AttachStdout: true,
@@ -92,45 +97,58 @@ export class Container {
             Cmd: cmd,
             OpenStdin: false,
             StdinOnce: false
-        })
-        .then(container => {
-            console.log("Container " + this.imageName + " created");
-            this.container = container;
-            return this.container.start();
         });
+
+        console.log("Container " + this.imageName + " created");
+        this.container = container;
+        return this.container.start();
     }
 
     public async exec(cmd: string []): Promise<any> {
-        return new BluebirdPromise<any>((resolve, reject) => {
-            if (!this.container) throw new Error("Container not started");
+        if (!this.container) throw new Error("Container not started");
 
-            this.container.exec({Cmd: cmd, AttachStdin: false, AttachStdout: true}, (error: Error, exec: Docker.Exec) => {
-                if (error) {
-                    console.error(error);
-                    reject(error);
-                }
-                else {
-                    exec.start({hijack: false, stdin: false}, (error: Error, stream: any) => {
-                        if (error) {
-                            console.error(error);
-                            reject(error);
-                        }
-                        else {
-                            console.log(stream);
-                            resolve(stream);
-                        }
-                    });
-                }
-            });
+        const exec = await this.container.exec({Cmd: cmd, AttachStdin: false, AttachStdout: true, AttachStderr: true});
+        const resultStream = await exec.start({hijack: true, stdin: false});
+        return resultStream;
+    }
+
+    public async execToString(cmd: string []): Promise<Container.Output> {
+        let stdoutStr = "";
+        const stdoutEchoStream = new stream.Writable();
+        stdoutEchoStream._write = function (chunk, encoding, done) {
+            // console.log(" > " + chunk.toString());
+            stdoutStr += chunk.toString();
+            done();
+        };
+
+        let stderrStr = "";
+        const stderrEchoStream = new stream.Writable();
+        stderrEchoStream._write = function (chunk, encoding, done) {
+            // console.error("$> " + chunk.toString());
+            stderrStr += chunk.toString();
+            done();
+        };
+
+        const execStream = await this.exec(cmd);
+        this.docker.modem.demuxStream(execStream.output, stdoutEchoStream, stderrEchoStream);
+        await new BluebirdPromise((resolve, reject) => {
+            execStream.output.on("end", () => resolve());
+            execStream.output.on("error", (error: any) => reject(error));
         });
+
+        return {
+            stdout: stdoutStr,
+            stderr: stderrStr,
+        };
     }
 
     public async cleanup() {
         try {
             if (this.container) {
-                await this.container.stop()
-                .then(() => { if (this.container) return this.container.remove(); })
-                .then(() => { this.container = undefined; console.log("Container " + this.imageName + " removed"); });
+                await this.container.stop();
+                if (this.container) await this.container.remove();
+                this.container = undefined;
+                console.log("Container " + this.imageName + " removed");
             }
         }
         catch (error) {
@@ -140,14 +158,21 @@ export class Container {
         if (this.imageBuilt) {
             try {
                 const image = this.docker.getImage(this.imageName);
-                if (image) await image.remove().then(
-                    () => { console.log("Image " + this.imageName + " removed"); },
-                    (error) => console.log("Ignoring error during cleanup: " + error.message)
-                );
+                if (image) {
+                    await image.remove();
+                    console.log("Image " + this.imageName + " removed");
+                }
             }
             catch (error) {
                 console.log("Ignoring error during cleanup: " + error.message);
             }
         }
+    }
+}
+
+export namespace Container {
+    export interface Output {
+        stdout: string;
+        stderr: string;
     }
 }

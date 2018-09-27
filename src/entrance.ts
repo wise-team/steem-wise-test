@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import "mocha";
-import * as getStream from "get-stream";
 
 import { Context } from "./Context";
 import { Config } from "./config";
@@ -28,10 +27,10 @@ coreTests(config, context);
 cliTests(config, context);
 voterPageTests(config, context);
 sqlTests(config, context);*/
-steemTests(config, context);
+// steemTests(config, context);
 /*liveMetricsTests(config, context);*/
 
-describe.skip("Tests on fully assembled system", function() {
+describe("Tests on fully assembled system", function() {
     const fullContext: FullContext = new FullContext(config);
     before(async function () {
         this.timeout(60 * 1000);
@@ -44,7 +43,7 @@ describe.skip("Tests on fully assembled system", function() {
     voterDelegatorScenariosTests(config, fullContext);
 
     after(async function () {
-        console.log("Tests done on fulle assembled system. Disassembling");
+        console.log("Tests done on fully assembled system. Disassembling");
         this.timeout(60 * 1000);
         await fullContext.shutdown();
         console.log("System disassembly done");

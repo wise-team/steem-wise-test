@@ -11,22 +11,22 @@ export class FullContext {
 
     public constructor(config: Config) {
         this.config = config;
-        this.cliContainer = new Container(config, "steem-wise-cli-" + Date.now());
-        this.daemonContainer = new Container(config, "steem-wise-cli-daemon-" + Date.now());
+        const imageName = "steem-wise-cli-" + Date.now();
+        this.cliContainer = new Container(config, imageName);
+        this.daemonContainer = new Container(config, imageName);
     }
 
     public async setup(): Promise<void> {
         await this.cliContainer.buildImage(this.config.repositories.cli.path);
         await this.cliContainer.start(Container.KEEP_RUNNING_CMD);
-        await this.daemonContainer.buildImage(this.config.repositories.cli.path);
+        // daemon container uses the same image
         await this.daemonContainer.start(Container.KEEP_RUNNING_CMD);
     }
 
-    public shutdown(): Promise<void> {
-        return BluebirdPromise.resolve()
-        .then(() => this.cliContainer.cleanup())
-        .then(() => this.daemonContainer.cleanup())
-        .then(() => console.log("FullContext cleanup done"));
+    public async shutdown(): Promise<void> {
+        await this.cliContainer.cleanup();
+        await this.daemonContainer.cleanup();
+        console.log("FullContext cleanup done");
     }
 
     public getCliContainer() {
