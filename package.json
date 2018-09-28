@@ -52,12 +52,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/noisy-witness/steem-wise-test.git"
+    "url": "git+https://github.com/wise-team/steem-wise-test.git"
   },
   "author": "Jędrzej Lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/noisy-witness/steem-wise-test/issues"
+    "url": "https://github.com/wise-team/steem-wise-test/issues"
   },
-  "homepage": "https://github.com/noisy-witness/steem-wise-test#readme"
+  "homepage": "https://github.com/wise-team/steem-wise-test#readme"
 }
