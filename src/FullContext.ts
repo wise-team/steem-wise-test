@@ -19,13 +19,13 @@ export class FullContext {
     public async setup(): Promise<void> {
         await this.cliContainer.buildImage(this.config.repositories.cli.path);
         await this.cliContainer.start(Container.KEEP_RUNNING_CMD);
-        // daemon container uses the same image
+        // daemon container uses the same image, so there is no need to build it again
         await this.daemonContainer.start(Container.KEEP_RUNNING_CMD);
     }
 
     public async shutdown(): Promise<void> {
-        await this.cliContainer.cleanup();
         await this.daemonContainer.cleanup();
+        await this.cliContainer.cleanup();
         console.log("FullContext cleanup done");
     }
 

@@ -46,7 +46,8 @@ export class Config {
         }
     };
 
-    public sqlEndpointUrl: string = "http://muon.jblew.pl:3000/";
+    public sqlEndpointHost: string = "sql.wise.vote";
+    public sqlEndpointApiPort: number = 80;
     public liveMetricsPeriodMs: number = 3 * 24 * 3600 * 1000; // 4 days
 
     public guestAccountCredentials: Config.Credentials = {
@@ -59,6 +60,9 @@ export class Config {
     };
     public requiredCredentialRoles: string [] = [ "delegator", "voter1", "voter2" ];
     public credentialsFilePath = "credentials.yml";
+
+    public skipBrowser: boolean = false;
+    public testBrowsers: string [] = [ "firefox" ];
 
     public constructor() {
         if (fs.existsSync(this.credentialsFilePath)) {
