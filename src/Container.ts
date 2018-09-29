@@ -134,7 +134,8 @@ export class Container {
         await new BluebirdPromise((resolve, reject) => {
             execStream.output.on("end", () => resolve());
             execStream.output.on("error", (error: any) => reject(error));
-        });
+        })
+        .then(() => BluebirdPromise.delay(100));
 
         return {
             stdout: stdoutStr,
@@ -167,6 +168,22 @@ export class Container {
                 console.log("Ignoring error during cleanup: " + error.message);
             }
         }
+    }
+
+    public static async run(imageName: string, cmd: string [], stream: stream.Writable, volumes: { [a: string]: string }): Promise<any> {
+        const docker = new Docker();
+        return docker.run(imageName, cmd, stream,
+            {
+                Image: imageName,
+                AttachStdin: false,
+                AttachStdout: true,
+                AttachStderr: true,
+                Tty: true,
+                OpenStdin: false,
+                StdinOnce: false,
+                Volumes: volumes
+            }
+        );
     }
 }
 

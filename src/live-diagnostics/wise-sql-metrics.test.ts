@@ -12,24 +12,23 @@ import { Context } from "../Context";
 export default function(config: Config, context: Context) {
     const endpoint = "http://" + config.sqlEndpointHost + ":" + config.sqlEndpointApiPort + "/";
 
-    describe("Live metrics (tests/live-metrics.test.ts)", () => {
+    describe("Live metrics (" + __dirname + ")", () => {
         let operations: any [] = [];
         let properties: { key: string, value: string } [] = [];
 
         const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - config.liveMetricsPeriodMs)).toISOString();
 
-        before(
-            () => axios.get(operationsUrl)
-            .then((resp: any) => {
-                // expect(resp.data).to.be.an("array").with.length.greaterThan(0);
-                operations = resp.data;
-            })
-            .then(() => axios.get(endpoint + "properties")
-            .then((resp: any) => {
-                // expect(resp.data).to.be.an("array").with.length.greaterThan(0);
-                properties = resp.data;
-            }))
-        );
+        before(async function () {
+            this.timeout(4000);
+
+            const operationsResp = await axios.get(operationsUrl);
+            expect(operationsResp.data).to.be.an("array").with.length.greaterThan(0);
+            operations = operationsResp.data;
+
+            const propertiesResp = await axios.get(endpoint + "properties");
+            expect(propertiesResp.data).to.be.an("array").with.length.greaterThan(0);
+            properties = propertiesResp.data;
+        });
 
         it("Sql endpoint has lag lower than 5 seconds", () => {
             expect(parseInt(properties.filter(prop => prop.key === "lag")[0].value)).to.be.lessThan(5);

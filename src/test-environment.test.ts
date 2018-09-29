@@ -4,8 +4,8 @@ import * as _ from "lodash";
 import * as steem from "steem";
 import * as BluebirdPromise from "bluebird";
 
-import { Config } from "../Config";
-import { Context } from "../Context";
+import { Config } from "./Config";
+import { Context } from "./Context";
 
 
 export default function(config: Config, context: Context) {

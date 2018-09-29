@@ -9,7 +9,7 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe("Steem using steem-js (tests/steem.test.ts)", function () {
+    describe("Steem using steem-js (" + __dirname + ")", function () {
         this.timeout(6000);
 
         it ("Does get_block correctly for an old block", () => {
@@ -34,8 +34,8 @@ export default function(config: Config, context: Context) {
             });
         });
 
-        it ("Does get_block correctly for erronous block", async () => {
-            const blockNum = 26256750; // 26256746, 26256747, 26256748, 26256749 has 0 transactions,
+        it ("Does get_block correctly for block made during HF20 introduction problems", async () => {
+            const blockNum = 26256960; // 26256746, 26256747, 26256748, 26256749 has 0 transactions,
 
             return steem.api.getBlockAsync(blockNum)
             .then((block: any) => {

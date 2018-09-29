@@ -10,36 +10,44 @@ export class Config {
     public repositories: { [x: string]: Config.Repository } = {
         core: {
             path: "../steem-wise-core",
+            githubPath: "wise-team/steem-wise-core",
+            npmPackageName: "steem-wise-core",
             isNode: true,
             isNpm: true,
             nodePath: ""
         },
         cli: {
             path: "../steem-wise-cli",
+            githubPath: "wise-team/steem-wise-cli",
             isNode: true,
+            npmPackageName: "steem-wise-cli",
             isNpm: true,
             nodePath: ""
         },
         voterPage: {
             path: "../steem-wise-voter-page",
+            githubPath: "wise-team/steem-wise-voter-page",
             isNode: false,
             isNpm: true,
             nodePath: ""
         },
         manual: {
             path: "../steem-wise-manual",
+            githubPath: "wise-team/steem-wise-manual",
             isNode: false,
             isNpm: false,
             nodePath: ""
         },
         sql: {
             path: "../steem-wise-sql",
+            githubPath: "wise-team/steem-wise-sql",
             isNode: true,
             isNpm: true,
             nodePath: "/pusher"
         },
         test: {
             path: "../steem-wise-test",
+            githubPath: "wise-team/steem-wise-test",
             isNode: true,
             isNpm: true,
             nodePath: ""
@@ -75,6 +83,8 @@ export class Config {
 export namespace Config {
     export interface Repository {
         path: string;
+        githubPath: string;
+        npmPackageName?: string;
         isNode: boolean;
         isNpm: boolean;
         nodePath: string;
