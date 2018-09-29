@@ -1,0 +1,8 @@
+Live diagnostics:
+- tests if voter page works (and if steemconnect works)
+- test if deployed versions match the newest releases
+
+E2E System tests:
+- test voter page
+- test for vulnerable packages
+- test for outdated packages

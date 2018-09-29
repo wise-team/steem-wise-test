@@ -72,12 +72,34 @@ export class Config {
     public skipBrowser: boolean = false;
     public testBrowsers: string [] = [ "firefox" ];
 
+
+    public wiseManualUrl: string = "https://wise.vote/";
+
+    /* used to check for broken links or old terms (that were replaced) */
+    public websites: string [] = [
+        "https://wise-team.io/",
+        "https://wise.vote/",
+    ];
+    public brokenLinkCheckerExcludes: string [] = [
+        "*linkedin.com*",
+        "http://sql.wise.vote/operations?select=moment,delegator,voter,operation_type&order=moment.desc (original: http://sql.wise.vote:80/operations?select=moment,delegator,voter,operation_type&order=moment.desc"
+    ];
+    public forbiddenPhrases: string [] = [
+        "noisy-witness",
+        "noisy witness",
+        "smartvote"
+    ];
+
+    /**
+     * Loads credentials into config
+     */
     public constructor() {
         if (fs.existsSync(this.credentialsFilePath)) {
             const credentialsFileContents = fs.readFileSync(this.credentialsFilePath, "utf8").toString();
             this.credentials = yaml.safeLoad(credentialsFileContents);
         }
     }
+
 }
 
 export namespace Config {
