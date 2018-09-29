@@ -48,7 +48,7 @@ export default function(config: Config, context: Context) {
                         () => expect(readmeContents.indexOf(prWelcomeBadge) !== -1).to.be.true
                     );
 
-                    const licenceBadge = "[![GitHub](https://img.shields.io/github/license/" + repo.githubPath + ".svg?style=flat-square)](https://github.com/" + repo.githubPath + "/blob/master/LICENSE)";
+                    const licenceBadge = "[![License](https://img.shields.io/github/license/" + repo.githubPath + ".svg?style=flat-square)](https://github.com/" + repo.githubPath + "/blob/master/LICENSE)";
                     it("has \"LICENSE\" badge: '" + licenceBadge + "'", () => {
                         expect(readmeContents.indexOf(licenceBadge) !== -1).to.be.true;
                     });

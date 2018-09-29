@@ -8,6 +8,7 @@ import { FullContext } from "../FullContext";
 import testEnvironmentTests from "../test-environment.test";
 import steemTests from "./steem.test";
 import wiseSqlMetricsTest from "./wise-sql-metrics.test";
+import githubMonitoringTest from "./github-monitoring.test";
 
 
 console.log("Setting up test environment...");
@@ -18,5 +19,6 @@ console.log("Loading tests...");
 testEnvironmentTests(config, context);
 steemTests(config, context);
 wiseSqlMetricsTest(config, context);
+githubMonitoringTest(config, context);
 
 console.log("Loading tests done. Executing...");
