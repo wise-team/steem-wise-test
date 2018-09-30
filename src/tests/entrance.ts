@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import "mocha";
+import * as fs from "fs";
 
 import { Context } from "../Context";
 import { Config } from "../config";
@@ -13,7 +14,6 @@ import voterPageTests from "./voter-page.test";
 import sqlTests from "./sql.test";
 import cliFullAssemblyTests from "./full-assembly/cli.test";
 import voterDelegatorScenariosTests from "./full-assembly/voter-delegator-scenarios.test";
-
 
 console.log("Setting up test environment...");
 const config = new Config();

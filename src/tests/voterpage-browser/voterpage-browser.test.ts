@@ -1,16 +1,17 @@
 import { expect } from "chai";
 import "mocha";
-import * as stream from "stream";
+import * as path from "path";
 
 import { Config } from "../../Config";
 import { Context } from "../../Context";
 import { Container } from "../../Container";
+import testCafeGenerator from "../../testCafeGenerator";
 
 
 export default function(config: Config, context: Context) {
-    describe("voter-page in browser (tests/voterpage-browser.test.ts)", function () {
-
-        if (!config.skipBrowser) it("Passes all browser tests", () => {
+    describe.only("voter-page in browser (tests/voterpage-browser.test.ts)", function () {
+        testCafeGenerator(config, context, path.resolve(__dirname, "testcafe"));
+        /*if (!config.skipBrowser) it("Passes all browser tests", () => {
             this.timeout(2 * 60 * 1000);
             let out = "";
             const outStream = new stream.Writable();
@@ -20,6 +21,6 @@ export default function(config: Config, context: Context) {
                 done();
             };
             // Container.run("testcafe/testcafe", [ "--no-color firefox" ], outStream);
-        });
+        });*/
     });
 }
