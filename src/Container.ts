@@ -170,7 +170,7 @@ export class Container {
         }
     }
 
-    public static async run(imageName: string, cmd: string [], stream: stream.Writable, volumes: { [a: string]: string }): Promise<any> {
+    public static async run(imageName: string, cmd: string [], stream: stream.Writable, volumes: { [a: string]: {} } = {}, binds: string [] = [], env: string [] = []): Promise<any> {
         const docker = new Docker();
         return docker.run(imageName, cmd, stream,
             {
@@ -181,9 +181,29 @@ export class Container {
                 Tty: true,
                 OpenStdin: false,
                 StdinOnce: false,
-                Volumes: volumes
+                Env: env,
+                "Volumes": volumes,
+                "HostConfig": {
+                    "Binds": binds
+                }
             }
         );
+    }
+
+    public static async runToString(imageName: string, cmd: string [], volumes: { [a: string]: {} }, binds: string []): Promise<string> {
+        let stdoutStr = "";
+        const stdoutEchoStream = new stream.Writable();
+        stdoutEchoStream._write = function (chunk, encoding, done) {
+            // console.log(" > " + chunk.toString());
+            stdoutStr += chunk.toString();
+            done();
+        };
+
+        const docker = new Docker();
+        const execRes = await Container.run(imageName, cmd, stdoutEchoStream, volumes, binds);
+        await BluebirdPromise.delay(100);
+
+        return stdoutStr;
     }
 }
 
