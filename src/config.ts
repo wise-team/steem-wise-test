@@ -4,6 +4,8 @@ import * as path from "path";
 import * as fs from "fs";
 
 export class Config {
+    public homepage: string = "https://wise.vote/";
+    public voterPageUrl: string = "https://wise.vote/voting-page/";
     public requiredNodeJsVersion = "9.11";
     public skipBuild: boolean = false;
 
@@ -82,12 +84,13 @@ export class Config {
     ];
     public brokenLinkCheckerExcludes: string [] = [
         "*linkedin.com*",
-        "http://sql.wise.vote/operations?select=moment,delegator,voter,operation_type&order=moment.desc (original: http://sql.wise.vote:80/operations?select=moment,delegator,voter,operation_type&order=moment.desc"
+        "http://sql.wise.vote/operations?select=moment,delegator,voter,operation_type&order=moment.desc"
     ];
     public forbiddenPhrases: string [] = [
         "noisy-witness",
         "noisy witness",
-        "smartvote"
+        "smartvote",
+        "muon"
     ];
 
     /**

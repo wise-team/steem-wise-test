@@ -14,7 +14,7 @@ export default function(config: Config, context: Context) {
         this.timeout(6 * 60 * 1000);
 
         config.websites.forEach(website => {
-            describe.only (website, () => {
+            describe (website, () => {
                 it("Has no broken links and forbidden phrases", (done) => {
                     const errors: string [] = [];
                     const brokenLinks: string [] = [];
