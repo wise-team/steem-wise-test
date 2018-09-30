@@ -35,6 +35,14 @@ export default function(config: Config, context: Context) {
                         expect(fs.existsSync(repo.path + repo.nodePath + "/package.json")).to.be.true;
                     });
 
+                    describe("package.json file", () => {
+                        const packageObj: any = JSON.parse(fs.readFileSync(repo.path + repo.nodePath + "/package.json", "UTF-8"));
+
+                        it("has correct homepage", () => {
+                            expect(packageObj.homepage).to.be.equal(config.homepage);
+                        });
+                    });
+
                     it(repo.path + repo.nodePath + " has package-lock.json file", () => {
                         expect(fs.existsSync(repo.path + repo.nodePath + "/package-lock.json")).to.be.true;
                     });
