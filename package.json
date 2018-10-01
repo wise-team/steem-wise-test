@@ -57,7 +57,13 @@
     "type": "git",
     "url": "git+https://github.com/wise-team/steem-wise-test.git"
   },
-  "author": "Jędrzej Lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor/)",
+  "keywords": [
+    "steem", "blockchain", "wise"
+  ],
+  "author": "The Wise Team (https://wise-team.io/)",
+  "contributors": [
+    "Jędrzej Lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor/)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/wise-team/steem-wise-test/issues"
