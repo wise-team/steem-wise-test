@@ -20,6 +20,8 @@ test("Loads rulesets properly", async t => {
         .typeText("#username-input-delegator-username", "steemprojects3")
         .expect(Selector(".load-ruleset-btn").innerText).eql("Load rules from @steemprojects3")
         .click(".load-ruleset-btn")
+        .wait(2000)
+        .expect(Selector(".load-ruleset-btn").innerText).eql("Load rules from @steemprojects3")
 
         // Use the assertion to check if the actual header text is equal to the expected one
         .expect(Selector(".steemconnect-container span a").innerText).eql("login with SteemConnect");

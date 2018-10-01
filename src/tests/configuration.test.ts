@@ -36,10 +36,34 @@ export default function(config: Config, context: Context) {
                     });
 
                     describe("package.json file", () => {
-                        const packageObj: any = JSON.parse(fs.readFileSync(repo.path + repo.nodePath + "/package.json", "UTF-8"));
+                        let packageObj: any;
+                        before(() => {
+                            packageObj = JSON.parse(fs.readFileSync(repo.path + repo.nodePath + "/package.json", "UTF-8"));
+                        });
 
                         it("has correct homepage", () => {
                             expect(packageObj.homepage).to.be.equal(config.homepage);
+                        });
+
+                        it("has wise-team as author", () => {
+                            expect(packageObj.author).to.be.equal("The Wise Team (" + config.teamPage + ")");
+                        });
+
+                        it("has > 0 contributors", () => {
+                            expect(packageObj.contributors).to.be.an("array").with.length.gt(0);
+                        });
+
+                        it("has bugs.url set to issues", () => {
+                            expect(packageObj.bugs.url).to.be.equal("https://github.com/" + repo.githubPath + "/issues");
+                        });
+
+                        it("has correct repository path", () => {
+                            expect(packageObj.repository.type).to.be.equal("git");
+                            expect(packageObj.repository.url).to.be.equal("git+https://github.com/" + repo.githubPath + ".git");
+                        });
+
+                        it("has keywords: [steem, wise, blockchain]", () => {
+                            expect(packageObj.keywords).to.include.members(["steem", "wise", "blockchain"]);
                         });
                     });
 
@@ -61,7 +85,7 @@ export default function(config: Config, context: Context) {
                         expect(readmeContents.indexOf(licenceBadge) !== -1).to.be.true;
                     });
 
-                    const chatBadge = "[![Chat](https://img.shields.io/badge/chat-on%20steem.chat-6b11ff.svg?style=flat-square)](https://steem.chat/channel/wise)";
+                    const chatBadge = "[![Chat](https://img.shields.io/badge/chat%20on%20discord-6b11ff.svg?style=flat-square)](" + config.chatUrl + ")";
                     it("has \"chat\" badge: '" + chatBadge + "'", () => {
                         expect(readmeContents.indexOf(chatBadge) !== -1).to.be.true;
                     });
