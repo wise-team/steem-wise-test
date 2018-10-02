@@ -63,6 +63,13 @@ export class Config {
             isNode: true,
             isNpm: true,
             nodePath: "/wise-hub-frontend"
+        },
+        ci: {
+            path: "../wise-ci",
+            githubPath: this.githubOrg + "/wise-ci",
+            isNode: true,
+            isNpm: true,
+            nodePath: ""
         }
     };
 
