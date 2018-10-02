@@ -1,6 +1,6 @@
 {
   "name": "steem-wise-test",
-  "version": "1.1.2",
+  "version": "1.2.2",
   "description": "System tests for steem wise",
   "directories": {},
   "engines": {
@@ -58,7 +58,9 @@
     "url": "git+https://github.com/wise-team/steem-wise-test.git"
   },
   "keywords": [
-    "steem", "blockchain", "wise"
+    "steem",
+    "blockchain",
+    "wise"
   ],
   "author": "The Wise Team (https://wise-team.io/)",
   "contributors": [
