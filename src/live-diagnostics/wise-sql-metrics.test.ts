@@ -4,19 +4,21 @@ import axios from "axios";
 import * as _ from "lodash";
 import * as steem from "steem";
 
+import { data as wise } from "../wise-config.gen.js";
+
 import { Config } from "../Config";
 import { Context } from "../Context";
 
 
 
 export default function(config: Config, context: Context) {
-    const endpoint = "http://" + config.sqlEndpointHost + ":" + config.sqlEndpointApiPort + "/";
+    const endpoint = wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host + "/";
 
     describe("Live metrics (" + __dirname + ")", () => {
         let operations: any [] = [];
         let properties: { key: string, value: string } [] = [];
 
-        const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - config.liveMetricsPeriodMs)).toISOString();
+        const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - wise.config.test.live.metrics.periodMs)).toISOString();
 
         before(async function () {
             this.timeout(4000);
@@ -72,7 +74,7 @@ export default function(config: Config, context: Context) {
         it("Sql endpoint hosts swagger specs", async () => {
             const swaggerSpecs: any = (await axios.get(endpoint)).data;
 
-            expect(swaggerSpecs.host).to.be.equal(config.sqlEndpointHost + ":" + config.sqlEndpointApiPort);
+            expect(swaggerSpecs.host).to.be.equal(wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host);
             expect(swaggerSpecs.basePath).to.be.equal("/");
 
             expect(swaggerSpecs.paths).to.have.all.keys("/", "/last_confirmation", "/operations", "/properties", "/rulesets");

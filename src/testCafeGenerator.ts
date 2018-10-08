@@ -10,7 +10,7 @@ import { Context } from "./Context";
 import { Container } from "./Container";
 
 
-export default function(config: Config, context: Context, testsDirPath: string) {
+export default function(config: Config, context: Context, browsers: string [], testsDirPath: string) {
     describe("testcafe tests", function () {
         this.timeout(10 * 60 * 1000);
         let docker: Docker;
@@ -38,7 +38,7 @@ export default function(config: Config, context: Context, testsDirPath: string) 
 
         it("Passes all browser tests", async () => {
             const image = "testcafe/testcafe";
-            const cmd: string [] = [ "--no-color", "--reporter", "json", config.testBrowsers.join(","), "/tests/*.js"];
+            const cmd: string [] = [ "--no-color", "--reporter", "json", browsers.join(","), "/tests/*.js"];
             console.log(cmd);
 
             let stdoutStr = "";

@@ -2,6 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import * as fs from "fs";
 import * as _ from "lodash";
+import { data as wise } from "../wise-config.gen.js";
 
 import { Context } from "../Context";
 import { Config } from "../config";
@@ -10,12 +11,13 @@ import Axios from "axios";
 
 export default function(config: Config, context: Context) {
     describe("Github monitoring (" + __dirname + ")", () => {
-        _.forOwn(context.getConfig().repositories, (repo: Config.Repository) => {
-            describe (repo.githubPath, () => {
+        _.forOwn(wise.config.repository.repositories, (repo: { name: string }) => {
+            const githubPath = wise.config.repository.github.organization + "/" + repo.name;
+            describe (githubPath, () => {
                 let issues: any = {};
 
                 before(async () => {
-                    const issuesRes = await Axios.get("https://api.github.com/search/issues?q=repo:" + repo.githubPath);
+                    const issuesRes = await Axios.get("https://api.github.com/search/issues?q=repo:" + githubPath);
                     issues = issuesRes.data;
                     expect(issues.incomplete_results).to.be.false;
                     expect(issues.total_count).to.be.greaterThan(0);

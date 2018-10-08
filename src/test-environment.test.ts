@@ -3,6 +3,7 @@ import "mocha";
 import * as _ from "lodash";
 import * as steem from "steem";
 import * as BluebirdPromise from "bluebird";
+import { data as wise } from "./wise-config.gen.js";
 
 import { Config } from "./Config";
 import { Context } from "./Context";
@@ -11,7 +12,7 @@ import { Context } from "./Context";
 export default function(config: Config, context: Context) {
     describe("Test environment (tests/test-environment.test.ts)", () => {
         it("Runs in correct version of nodejs", () => {
-            expect(process.version).contains(context.getConfig().requiredNodeJsVersion);
+            expect(process.version).contains(wise.config.npm.node.version);
         });
 
         it("Required credential roles are satisfied", () => {

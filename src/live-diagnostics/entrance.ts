@@ -6,6 +6,8 @@ import { Context } from "../Context";
 import { Config } from "../config";
 import { FullContext } from "../FullContext";
 
+import { data as wise } from "../wise-config.gen.js";
+
 import testEnvironmentTests from "../test-environment.test";
 import steemTests from "./steem.test";
 import wiseSqlMetricsTest from "./wise-sql-metrics.test";
@@ -25,6 +27,8 @@ wiseSqlMetricsTest(config, context);
 wiseManualTest(config, context);
 githubMonitoringTest(config, context);
 websitesTest(config, context);
-describe("voterpage-live in testcafe", () => testcafeGenerator(config, context, path.resolve(__dirname, "voterpage-live")));
+if (wise.config.test.live.inBrowserTests.enabled) {
+    describe("voterpage-live in testcafe", () => testcafeGenerator(config, context, wise.config.test.live.inBrowserTests.browsers, path.resolve(__dirname, "voterpage-live")));
+}
 
 console.log("Loading tests done. Executing...");

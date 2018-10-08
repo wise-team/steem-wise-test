@@ -5,6 +5,8 @@ import * as _ from "lodash";
 import * as blc from "broken-link-checker";
 import Axios from "axios";
 
+import { data as wise } from "../wise-config.gen.js";
+
 import { Context } from "../Context";
 import { Config } from "../config";
 
@@ -13,8 +15,8 @@ export default function(config: Config, context: Context) {
     describe("Websites tests (" + __dirname + ")", function () {
         this.timeout(6 * 60 * 1000);
 
-        config.websites.forEach(website => {
-            describe (website, () => {
+        wise.config.websites.forEach(website => {
+            if (website.checkBrokenLinks) describe (website.url, () => {
                 it("Has no broken links and forbidden phrases", (done) => {
                     const errors: string [] = [];
                     const brokenLinks: string [] = [];
@@ -24,7 +26,7 @@ export default function(config: Config, context: Context) {
                     iterateTreeForForbiddenWords = (node: any, pageUrl: string) => {
                         if (node.data || node.value) {
                             const text = node.data ? node.data : node.value;
-                            config.forbiddenPhrases.forEach(forbiddenPhrase => {
+                            wise.config.test.websites.forbiddenPhrases.forEach(forbiddenPhrase => {
                                 if (text.indexOf(forbiddenPhrase) !== -1) forbiddenWords.push(pageUrl + ": " + forbiddenPhrase);
                             });
                         }
@@ -35,7 +37,7 @@ export default function(config: Config, context: Context) {
                         filterLevel: 3, // 3 = clickable links, media, iframes, meta refreshes, stylesheets, scripts, forms, metadata
                         honorRobotExclusions: false,
                         maxSocketsPerHost: 10,
-                        excludedKeywords: config.brokenLinkCheckerExcludes
+                        excludedKeywords: wise.config.test.websites.brokenLinks.excludes
                     };
                     let siteChecker: blc.SiteChecker;
                     siteChecker = new blc.SiteChecker(options, {
