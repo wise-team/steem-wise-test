@@ -70,7 +70,7 @@ async function run() {
                     + "[total: " + lastJsonResult.stats.total + "->*" + currentJsonResult.stats.total + "*] "
                     + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
                     + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
-                    + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] ";
+                    + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] \n";
             if (lastJsonResult) out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n ";
             else out.short += "_Previous test not found._";
 
@@ -84,19 +84,20 @@ async function run() {
                     if (prevMatches.length > 0) previousTest = prevMatches[0];
                 }
 
-                if (test.state !== "pass") {
-                    out.short += " - " + /*(test.state === "pass" ? ":shamrock:" : */(test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:"))/*)*/;
-                    out.short += " " + test.state + " *" + test.name + "*: _" + test.message + " _ \n";
-                }
-                else if (previousTest && previousTest.state !== test.state) {
+                if (test.state !== "pass" || (previousTest && previousTest.state !== test.state)) {
                     out.short += " - " + (test.state === "pass" ? ":shamrock:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
-                    out.short += " [" + previousTest.state + " -> " + test.state + "] " + test.name + ": " + test.message + "\n";
+
+                    if (!previousTest) out.short += " _new_ ";
+                    else if (previousTest.state !== test.state) {
+                        out.short += " [" + previousTest.state + " -> " + test.state + "]";
+                    }
+                    else out.short += " [" + test.state + "]";
+                    out.short +=  " *" + test.name + "*: " + test.message + "\n";
+
                     changes = true;
-                    out.notify = true; // notify on test changes
                 }
-                else if (!previousTest) {
-                    out.short += "- [" + test.state + "] _new test_ " + test.name + ": " + test.message + "\n";
-                    changes = true;
+
+                if (!previousTest || previousTest.state !== test.state) {
                     out.notify = true;
                 }
             });
@@ -125,14 +126,14 @@ async function run() {
     if (out.txtLog && out.txtLog.length > 0) {
         attachements.push({
             title: "Stdout and stderr",
-            text: "```\n" + lib.sanitizeForSlack(out.txtLog) + "\n```\n",
-            mrkdwn: true,
+            text: out.txtLog,
+            mrkdwn: false,
         });
     }
 
     const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
     const slackMessage = {
-        text: (out.notify ? "Notification to: " + mentions : "") + lib.sanitizeForSlack(title + out.short),
+        text: (out.notify ? "Notification to: " + mentions : "") + "\n" + lib.sanitizeForSlack(title + out.short),
         attachments: attachements,
         mrkdwn: true,
         color: (out.notify ? "#ff264f" : "#36a64f")
