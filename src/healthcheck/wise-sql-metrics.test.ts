@@ -14,7 +14,7 @@ import { Context } from "../Context";
 export default function(config: Config, context: Context) {
     const endpoint = wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host + "/";
 
-    describe("Wise SQL metrics (" + __dirname + ")", () => {
+    describe("Wise SQL metrics", () => {
         let operations: any [] = [];
         let properties: { key: string, value: string } [] = [];
 

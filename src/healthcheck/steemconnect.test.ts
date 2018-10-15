@@ -12,7 +12,7 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe("Steemconnect (" + __dirname + ")", function () {
+    describe("Steemconnect", function () {
         describe ("Steemconnect owner account", () => {
             const ownerAccountName = wise.config.steemconnect.owner.account;
             let ownerAccount: any = undefined;

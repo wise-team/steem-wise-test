@@ -13,7 +13,7 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe("Steem using steem-js (" + __dirname + ")", function () {
+    describe("Steem using steem-js", function () {
         this.timeout(3500);
 
         it ("Does get_block correctly for an old block", () => {

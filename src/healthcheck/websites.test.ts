@@ -12,7 +12,7 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe.skip("Websites tests (" + __dirname + ")", function () {
+    describe.skip("Websites tests", function () {
         this.timeout(6 * 60 * 1000);
 
         wise.config.websites.forEach(website => {

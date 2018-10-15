@@ -12,7 +12,7 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe("Wise manual (" + __dirname + ")", () => {
+    describe("Wise manual", () => {
         it ("Has correct operations-count badge", async () => {
             const res = await axios.get(wise.config.manual.url, { responseType: "text" });
 
