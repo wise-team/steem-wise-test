@@ -83,7 +83,7 @@ async function run() {
                 out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n ";
                 let changes: boolean = false;
                 out.long = "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
-                out.long += "```\n";
+                out.long += "\n";
                 currentJsonResult.tests.forEach((test: { name: string; state: "pass" | "fail" | "pending"; message: string }) => {
                     let previousTest: { name: string; state: "pass" | "fail" | "pending"; message: string } | undefined = undefined;
                     const prevMatches = lastJsonResult.tests.filter((prevTest: any) => prevTest.name === test.name);
@@ -100,11 +100,11 @@ async function run() {
                         out.notify = true;
                     }
 
-                    out.long += " - [" + (test.state === "pass" ? ":white_check_mark:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
-                    out.long += " " + (test.state + "       ").substring(0, 7) + "] *" + test.name + "*: _" + test.message + "_ \n";
+                    out.long += " - " + (test.state === "pass" ? ":white_check_mark:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
+                    out.long += " " + test.state + " *" + test.name + "*: _" + test.message + "_ \n";
                 });
-                out.long += "\n```";
-                if (!changes) out.short += "No changes since previous healthcheck \n";
+                out.long += "\n";
+                if (!changes) out.short += "*No changes since previous healthcheck* \n";
                 if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
             }
         }
@@ -128,21 +128,33 @@ async function run() {
         title: "Tests result",
         text: lib.sanitizeForSlack(out.long)
     });
-    if (out.txtLog) attachements.push({
-        title: "Stdout & stderr",
-        text: lib.sanitizeForSlack(out.txtLog)
-    });
 
     const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
-
     const slackMessage = {
         text: lib.sanitizeForSlack(title + out.short)  + (out.notify ? mentions : ""),
         attachments: attachements,
-        mrkdwn: true
+        mrkdwn: true,
+        color: (out.notify ? "#ff264f" : "#36a64f")
     };
-
     const response = await axios.post(webHookUrl, slackMessage);
     console.log("Message to slack sent. Got response: " + JSON.stringify(response.data, undefined, 2));
+
+
+    if (out.txtLog) {
+        const title2 = "STDOUT and STDERR of Wise healthckeck finished at " + (new Date().toISOString()) + "";
+        const slackMessage2 = {
+            text: title2,
+            attachments: [
+                {
+                    title: "Stdout and stderr",
+                    text: "```\n" + out.txtLog + "\n```\n"
+                }
+            ]
+        };
+
+        const response2 = await axios.post(webHookUrl, slackMessage2);
+        console.log("Message to slack sent. Got response: " + JSON.stringify(response2.data, undefined, 2));
+    }
 }
 
 run();
