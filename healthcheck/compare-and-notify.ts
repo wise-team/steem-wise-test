@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
-import * as util from "./util";
+import * as lib from "./lib";
 import axios from "axios";
 import { config } from "./config";
 
@@ -108,19 +108,19 @@ async function run() {
      */
     const mentions = "\n" + config.mentions.map(mention => "<@" + mention + ">").join(" ");
     const attachements: any [] = [];
-    if (out.txtLog) attachements.push({
-        title: "Stdout & stderr",
-        text: util.sanitizeForSlack(out.txtLog)
-    });
     if (out.long) attachements.push({
         title: "Tests result",
-        text: util.sanitizeForSlack(out.long)
+        text: lib.sanitizeForSlack(out.long)
+    });
+    if (out.txtLog) attachements.push({
+        title: "Stdout & stderr",
+        text: lib.sanitizeForSlack(out.txtLog)
     });
 
     const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
 
     const slackMessage = {
-        text: util.sanitizeForSlack(title + out.short)  + (out.notify ? mentions : ""),
+        text: lib.sanitizeForSlack(title + out.short)  + (out.notify ? mentions : ""),
         attachments: attachements,
         mrkdwn: true
     };
