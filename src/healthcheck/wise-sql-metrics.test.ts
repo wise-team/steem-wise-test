@@ -14,7 +14,7 @@ import { Context } from "../Context";
 export default function(config: Config, context: Context) {
     const endpoint = wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host + "/";
 
-    describe("Live metrics (" + __dirname + ")", () => {
+    describe("Wise SQL metrics (" + __dirname + ")", () => {
         let operations: any [] = [];
         let properties: { key: string, value: string } [] = [];
 
@@ -23,10 +23,12 @@ export default function(config: Config, context: Context) {
         before(async function () {
             this.timeout(4000);
 
+            console.log("Loading operations from " + operationsUrl);
             const operationsResp = await axios.get(operationsUrl);
             expect(operationsResp.data).to.be.an("array").with.length.greaterThan(0);
             operations = operationsResp.data;
 
+            console.log("Loading properties from " + operationsUrl);
             const propertiesResp = await axios.get(endpoint + "properties");
             expect(propertiesResp.data).to.be.an("array").with.length.greaterThan(0);
             properties = propertiesResp.data;
