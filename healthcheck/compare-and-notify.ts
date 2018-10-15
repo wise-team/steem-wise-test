@@ -115,7 +115,7 @@ async function run() {
     /**
      * Send to slack
      */
-    const mentions = "\n" + config.mentions.map(mention => "<@" + mention + ">").join(" ");
+    const mentions = "\n" + config.pmUsers.map(mention => "<@" + mention + ">").join(" ");
     const attachements: any [] = [];
     if (out.long && out.long.length > 0) attachements.push({
         title: "Tests result",
