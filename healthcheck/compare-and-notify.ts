@@ -68,45 +68,44 @@ async function run() {
             }
         }
         else {
-            if (!lastJsonResult) {
-                out.short = "Healthcheck tests performed. Passes: " + currentJsonResult.stats.passes + ", failures: " + currentJsonResult.stats.failures + ", pending: " + currentJsonResult.stats.pending + " /total: " + currentJsonResult.stats.total;
-                out.long = JSON.stringify(currentJsonResult, undefined, 2);
-                if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
-                out.notify = true;
-            }
-            else {
-                out.short = "Healthcheck tests performed (previous->current): "
-                     + "[total: " + lastJsonResult.stats.total + "->*" + currentJsonResult.stats.total + "*] "
-                     + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
-                     + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
-                     + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] ";
-                out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n ";
-                let changes: boolean = false;
-                out.long = "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
-                out.long += "\n";
-                currentJsonResult.tests.forEach((test: { name: string; state: "pass" | "fail" | "pending"; message: string }) => {
-                    let previousTest: { name: string; state: "pass" | "fail" | "pending"; message: string } | undefined = undefined;
+            out.short = "Healthcheck tests performed (previous->current): "
+                    + "[total: " + lastJsonResult.stats.total + "->*" + currentJsonResult.stats.total + "*] "
+                    + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
+                    + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
+                    + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] ";
+            if (lastJsonResult) out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n ";
+            else out.short += "_Previous test not found._";
+
+            let changes: boolean = false;
+            out.long = "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
+            out.long += "\n";
+            currentJsonResult.tests.forEach((test: { name: string; state: "pass" | "fail" | "pending"; message: string }) => {
+                let previousTest: { name: string; state: "pass" | "fail" | "pending"; message: string } | undefined = undefined;
+                if (lastJsonResult) {
                     const prevMatches = lastJsonResult.tests.filter((prevTest: any) => prevTest.name === test.name);
                     if (prevMatches.length > 0) previousTest = prevMatches[0];
+                }
 
-                    if (previousTest && previousTest.state !== test.state) {
-                        out.short += "- [" + previousTest.state + " -> " + test.state + "] " + test.name + ": " + test.message + "\n";
-                        changes = true;
-                        out.notify = true; // notify on test changes
-                    }
-                    else if (!previousTest) {
-                        out.short += "- [*" + test.state + "] _new test_ " + test.name + ": " + test.message + "\n";
-                        changes = true;
-                        out.notify = true;
-                    }
+                if (previousTest && previousTest.state !== test.state) {
+                    out.short += " - " + (test.state === "pass" ? ":shamrock:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
+                    out.short += " [" + previousTest.state + " -> " + test.state + "] " + test.name + ": " + test.message + "\n";
+                    changes = true;
+                    out.notify = true; // notify on test changes
+                }
+                else if (!previousTest) {
+                    out.short += "- [" + test.state + "] _new test_ " + test.name + ": " + test.message + "\n";
+                    changes = true;
+                    out.notify = true;
+                }
 
-                    out.long += " - " + (test.state === "pass" ? ":white_check_mark:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
+                if (test.state !== "pass") {
+                    out.long += " - " + /*(test.state === "pass" ? ":shamrock:" : */(test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:"))/*)*/;
                     out.long += " " + test.state + " *" + test.name + "*: _" + test.message + "_ \n";
-                });
-                out.long += "\n";
-                if (!changes) out.short += "*No changes since previous healthcheck* \n";
-                if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
-            }
+                }
+            });
+            out.long += "\n";
+            if (!changes) out.short += "*No changes since previous healthcheck* \n";
+            if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
         }
     }
     catch (error) {

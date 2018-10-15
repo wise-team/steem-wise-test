@@ -6,5 +6,5 @@ export function sanitizeForSlack(text: string): string {
             return charCode > 127 ? encodeURIComponent(char) : char;
         })
         .join("")
-    .split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt");
+    .split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
 }
