@@ -77,7 +77,8 @@ async function run() {
                     let previousTest: { name: string; state: "pass" | "fail" | "pending"; message: string } | undefined = undefined;
                     const prevMatches = lastJsonResult.tests.filter((prevTest: any) => prevTest.name === test.name);
                     if (prevMatches.length > 0) previousTest = prevMatches[0];
-                    if (previousTest.state !== test.state) {
+
+                    if (previousTest && previousTest.state !== test.state) {
                         out.short += "- [" + previousTest.state + " -> " + test.state + "] " + test.name + ": " + test.message + "\n";
                         out.notify = true; // notify on test changes
                     }
@@ -86,7 +87,7 @@ async function run() {
                         out.notify = true;
                     }
                 });
-                out.long = JSON.stringify(currentJsonResult, undefined, 2);
+                if (currentJsonResult) out.long = JSON.stringify(currentJsonResult, undefined, 2);
                 out.txtLog = currenTxtOutput;
             }
         }
