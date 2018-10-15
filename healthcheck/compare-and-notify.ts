@@ -130,7 +130,7 @@ async function run() {
     if (out.txtLog && out.txtLog.length > 0) {
         attachements.push({
             title: "Stdout and stderr",
-            text: lib.sanitizeForSlack(out.txtLog)
+            text: out.txtLog
         });
     }
 
