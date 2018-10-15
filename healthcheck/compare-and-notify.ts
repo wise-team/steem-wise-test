@@ -26,6 +26,7 @@ async function run() {
         let currentJsonResult: any | undefined = undefined;
         let currenTxtOutput: string | undefined = undefined;
         let lastJsonResult: any | undefined = undefined;
+        let lastResultDir: string = "";
 
         const currentJsonResultFile = path.resolve(currentLogDir, "result.json");
         if (fs.existsSync(currentJsonResultFile)) {
@@ -42,7 +43,7 @@ async function run() {
         .filter(name => name !== path.basename(currentLogDir))
         .sort().reverse();
         if (logBaseDirChildren.length > 0) {
-            const lastResultDir = path.resolve(logBaseDir, logBaseDirChildren[0]);
+            lastResultDir = path.resolve(logBaseDir, logBaseDirChildren[0]);
             if (fs.existsSync(lastResultDir)) {
                 const lastJsonResultDir = path.resolve(logBaseDir, logBaseDirChildren[0]);
                 const lastJsonResultFile = path.resolve(lastJsonResultDir, "result.json");
@@ -56,7 +57,7 @@ async function run() {
         if (!currentJsonResult) {
             if (currenTxtOutput) {
                 out.short = "Error: Tests did not produce correct JSON output. Here is the output log:";
-                out.long = out.txtLog = currenTxtOutput;
+                out.long = out.txtLog = "```\n" + currenTxtOutput + "\n```";
                 out.notify = true;
             }
             else {
@@ -70,7 +71,7 @@ async function run() {
             if (!lastJsonResult) {
                 out.short = "Healthcheck tests performed. Passes: " + currentJsonResult.stats.passes + ", failures: " + currentJsonResult.stats.failures + ", pending: " + currentJsonResult.stats.pending + " /total: " + currentJsonResult.stats.total;
                 out.long = JSON.stringify(currentJsonResult, undefined, 2);
-                if (currenTxtOutput) out.txtLog = currenTxtOutput;
+                if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
                 out.notify = true;
             }
             else {
@@ -79,10 +80,10 @@ async function run() {
                      + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
                      + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
                      + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] ";
-                out.short += "\n ";
+                out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n ";
                 let changes: boolean = false;
-                out.long = "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: ";
-                out.long += "```";
+                out.long = "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
+                out.long += "```\n";
                 currentJsonResult.tests.forEach((test: { name: string; state: "pass" | "fail" | "pending"; message: string }) => {
                     let previousTest: { name: string; state: "pass" | "fail" | "pending"; message: string } | undefined = undefined;
                     const prevMatches = lastJsonResult.tests.filter((prevTest: any) => prevTest.name === test.name);
@@ -94,7 +95,7 @@ async function run() {
                         out.notify = true; // notify on test changes
                     }
                     else if (!previousTest) {
-                        out.short += "- [*" + test.state + "] " + test.name + ": " + test.message + "\n";
+                        out.short += "- [*" + test.state + "] _new test_ " + test.name + ": " + test.message + "\n";
                         changes = true;
                         out.notify = true;
                     }
@@ -102,9 +103,9 @@ async function run() {
                     out.long += " - [" + (test.state === "pass" ? ":white_check_mark:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
                     out.long += " " + (test.state + "       ").substring(0, 7) + "] *" + test.name + "*: _" + test.message + "_ \n";
                 });
-                out.long += "```";
+                out.long += "\n```";
                 if (!changes) out.short += "No changes since previous healthcheck \n";
-                if (currenTxtOutput) out.txtLog = currenTxtOutput;
+                if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
             }
         }
     }
