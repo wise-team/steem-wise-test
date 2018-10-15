@@ -75,7 +75,7 @@ async function run() {
                 out.notify = true;
             }
             else {
-                out.short = "Healthcheck tests performed _(previous->*current*)_: "
+                out.short = "Healthcheck tests performed (previous->current): "
                      + "[total: " + lastJsonResult.stats.total + "->*" + currentJsonResult.stats.total + "*] "
                      + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
                      + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
@@ -115,8 +115,7 @@ async function run() {
         out.long = "*" + error.message + "*\n" + error.stack;
     }
 
-    console.log(JSON.stringify(out));
-
+    console.log(lib.sanitizeForSlack(out.long));
 
     console.log("Sending to slack...");
     /**
@@ -141,6 +140,8 @@ async function run() {
 
 
     if (out.txtLog) {
+        console.log("Sending stdout and stderr to slack...");
+
         const title2 = "STDOUT and STDERR of Wise healthckeck finished at " + (new Date().toISOString()) + "";
         const slackMessage2 = {
             text: title2,
@@ -153,7 +154,7 @@ async function run() {
         };
 
         const response2 = await axios.post(webHookUrl, slackMessage2);
-        console.log("Message to slack sent. Got response: " + JSON.stringify(response2.data, undefined, 2));
+        console.log("Message2 (with stdout and stderr) to slack sent. Got response: " + JSON.stringify(response2.data, undefined, 2));
     }
 }
 
