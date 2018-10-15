@@ -71,7 +71,7 @@ async function run() {
                     + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
                     + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
                     + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] \n";
-            if (lastJsonResult) out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n\n ";
+            if (lastJsonResult) out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n\n";
             else out.short += "_Previous test not found._\n\n";
 
             let changes: boolean = false;
@@ -96,6 +96,7 @@ async function run() {
                 }
 
                 if (!previousTest || previousTest.state !== test.state) {
+                    console.log("NOTIFY: reason: " + (previousTest ?  "test state changed " + previousTest.state + " -> " + test.state : "new test"));
                     out.notify = true;
                 }
             });
@@ -142,6 +143,8 @@ async function run() {
     };
     const response = await axios.post(webHookUrl, slackMessage);
     console.log("Message to slack sent. Got response: " + JSON.stringify(response.data, undefined, 2));
+    console.log("Done. Exitting with code 0");
+    process.exit(0);
 }
 
 run();
