@@ -28,10 +28,12 @@ export default function(config: Config, context: Context) {
             expect(operationsResp.data).to.be.an("array").with.length.greaterThan(0);
             operations = operationsResp.data;
 
-            console.log("Loading properties from " + operationsUrl);
+            console.log("Loading properties from " + endpoint + "properties");
             const propertiesResp = await axios.get(endpoint + "properties");
             expect(propertiesResp.data).to.be.an("array").with.length.greaterThan(0);
             properties = propertiesResp.data;
+
+            console.log("Loading properties done");
         });
 
        it("Sql endpoint has lag lower than 5 seconds", () => {
