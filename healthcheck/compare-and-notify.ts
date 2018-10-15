@@ -57,7 +57,7 @@ async function run() {
         if (!currentJsonResult) {
             if (currenTxtOutput) {
                 out.short = "Error: Tests did not produce correct JSON output. Here is the output log:";
-                out.long = out.txtLog = "```\n" + currenTxtOutput + "\n```";
+                out.long = out.txtLog = currenTxtOutput;
                 out.notify = true;
             }
             else {
@@ -84,6 +84,7 @@ async function run() {
 
                 if (test.state !== "pass" || (previousTest && previousTest.state !== test.state)) {
                     out.short += " - " + (test.state === "pass" ? ":shamrock:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
+                    if (!previousTest || previousTest.state !== test.state) out.short += ":zap:";
 
                     if (!previousTest) out.short += " _new_ ";
                     else if (previousTest.state !== test.state) {
@@ -96,7 +97,7 @@ async function run() {
                 }
 
                 if (!previousTest || previousTest.state !== test.state) {
-                    console.log("NOTIFY: reason: " + (previousTest ?  "test state changed " + previousTest.state + " -> " + test.state : "new test"));
+                    console.log("NOTIFY: reason: " + (previousTest ?  "test state changed " + previousTest.state + " -> " + test.state : "new test") + " ; test.name=" + test.name);
                     out.notify = true;
                 }
             });
@@ -105,7 +106,7 @@ async function run() {
 
             out.short += "\n";
             if (!changes) out.short += "*No changes since previous healthcheck* \n";
-            if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
+            if (currenTxtOutput) out.txtLog = currenTxtOutput;
         }
     }
     catch (error) {
@@ -129,8 +130,7 @@ async function run() {
     if (out.txtLog && out.txtLog.length > 0) {
         attachements.push({
             title: "Stdout and stderr",
-            text: lib.sanitizeForSlack(out.txtLog),
-            mrkdwn: false,
+            text: lib.sanitizeForSlack(out.txtLog)
         });
     }
 
@@ -138,7 +138,6 @@ async function run() {
     const slackMessage = {
         text: (out.notify ? "Notification to: " + mentions + "\n" : "")  + lib.sanitizeForSlack(title + out.short),
         attachments: attachements,
-        mrkdwn: true,
         color: (out.notify ? "#ff264f" : "#36a64f")
     };
     const response = await axios.post(webHookUrl, slackMessage);
