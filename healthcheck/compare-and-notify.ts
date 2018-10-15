@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
+import * as util from "./util";
 import axios from "axios";
 import { config } from "./config";
 
@@ -93,7 +94,9 @@ async function run() {
         }
     }
     catch (error) {
+        console.error(error);
         out.short = "Error: " + error;
+        out.long = "*" + error.message + "*\n" + error.stack;
     }
 
     console.log(JSON.stringify(out));
@@ -103,24 +106,27 @@ async function run() {
     /**
      * Send to slack
      */
-    const mentions = "\n" + config.mentions.map(mention => "@" + mention).join(" ");
+    const mentions = "\n" + config.mentions.map(mention => "<@" + mention + ">").join(" ");
     const attachements: any [] = [];
     if (out.txtLog) attachements.push({
         title: "Stdout & stderr",
-        text: out.txtLog
+        text: util.sanitizeForSlack(out.txtLog)
     });
     if (out.long) attachements.push({
         title: "Tests result",
-        text: out.long
+        text: util.sanitizeForSlack(out.long)
     });
 
+    const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
+
     const slackMessage = {
-        text: out.short + (out.notify ? mentions : ")"),
-        attachments: attachements
+        text: util.sanitizeForSlack(title + out.short)  + (out.notify ? mentions : ""),
+        attachments: attachements,
+        mrkdwn: true
     };
 
     const response = await axios.post(webHookUrl, slackMessage);
-    console.log("Message to slack sent. Got response: " + JSON.stringify(response, undefined, 2));
+    console.log("Message to slack sent. Got response: " + JSON.stringify(response.data, undefined, 2));
 }
 
 run();

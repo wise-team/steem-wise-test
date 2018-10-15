@@ -15,8 +15,7 @@ then
 fi
 
 docker run -w "/app" -v "${DIR}/slackWebhook.url:/slackWebhook.url:ro" -v "${DIR}/..:/app:ro" -v "${LOG_VOLUME}:/logs" "node:${NODE_VERSION}" /app/healthcheck/healthcheck-entrypoint.sh \
-##§ '\\ \n' + d(data.config.docker.labels.defaultLabels).map(label => '  --label ' + label(data)).join(" \\\n") + '\n' §##\ 
-  --label maintainer="The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>" \
+##§ '' + d(data.config.docker.labels.defaultLabels).map(label => '  --label ' + label(data)).join(" \\\n") + '\n' §##  --label maintainer="The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>" \
   --label vote.wise.wise-version="1.2.2" \
   --label vote.wise.license="MIT" \
   --label vote.wise.repository="steem-wise-test"
