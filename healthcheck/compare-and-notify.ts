@@ -71,12 +71,10 @@ async function run() {
                     + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
                     + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
                     + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] \n";
-            if (lastJsonResult) out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n ";
-            else out.short += "_Previous test not found._";
+            if (lastJsonResult) out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n\n ";
+            else out.short += "_Previous test not found._\n\n";
 
             let changes: boolean = false;
-            out.short += "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
-            out.short += "\n";
             currentJsonResult.tests.forEach((test: { name: string; state: "pass" | "fail" | "pending"; message: string }) => {
                 let previousTest: { name: string; state: "pass" | "fail" | "pending"; message: string } | undefined = undefined;
                 if (lastJsonResult) {
@@ -102,6 +100,9 @@ async function run() {
                 }
             });
             out.short += "\n";
+            out.short += "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
+
+            out.short += "\n";
             if (!changes) out.short += "*No changes since previous healthcheck* \n";
             if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
         }
@@ -112,10 +113,11 @@ async function run() {
         out.long = "*" + error.message + "*\n" + error.stack;
     }
 
-    console.log("Sending to slack...");
+
     /**
      * Send to slack
      */
+    console.log("Sending to slack...");
     const mentions = "\n" + config.mentions.map((mention: string) => "<@" + mention + ">").join(" ");
     const attachements: any [] = [];
     if (out.long && out.long.length > 0) attachements.push({
@@ -126,14 +128,14 @@ async function run() {
     if (out.txtLog && out.txtLog.length > 0) {
         attachements.push({
             title: "Stdout and stderr",
-            text: out.txtLog,
+            text: lib.sanitizeForSlack(out.txtLog),
             mrkdwn: false,
         });
     }
 
     const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
     const slackMessage = {
-        text: (out.notify ? "Notification to: " + mentions : "") + "\n" + lib.sanitizeForSlack(title + out.short),
+        text: (out.notify ? "Notification to: " + mentions + "\n" : "")  + lib.sanitizeForSlack(title + out.short),
         attachments: attachements,
         mrkdwn: true,
         color: (out.notify ? "#ff264f" : "#36a64f")
