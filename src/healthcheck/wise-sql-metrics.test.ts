@@ -18,7 +18,7 @@ export default function(config: Config, context: Context) {
         let operations: any [] = [];
         let properties: { key: string, value: string } [] = [];
 
-        const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - wise.config.test.live.metrics.periodMs)).toISOString();
+        const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - wise.config.test.healthcheck.metrics.periodMs)).toISOString();
 
         before(async function () {
             this.timeout(4000);
@@ -32,16 +32,16 @@ export default function(config: Config, context: Context) {
             properties = propertiesResp.data;
         });
 
-        it("Sql endpoint has lag lower than 5 seconds", () => {
+       it("Sql endpoint has lag lower than 5 seconds", () => {
             expect(parseInt(properties.filter(prop => prop.key === "lag")[0].value)).to.be.lessThan(5);
         });
 
-        it("Sql endpoint has lag updated at most 5 minutes ago", () => {
+       it("Sql endpoint has lag updated at most 5 minutes ago", () => {
             const lagUpdatedAgoMs = Date.now() - new Date(properties.filter(prop => prop.key === "lag_update_time")[0].value).getTime();
             expect(lagUpdatedAgoMs).to.be.lessThan(5 * 60 * 1000);
         });
 
-        it("Sql endpoint is at most 10 blocks away from the head block", () => {
+       it("Sql endpoint is at most 10 blocks away from the head block", () => {
             const lastProcessedBlock = parseInt(properties.filter(prop => prop.key === "last_processed_block")[0].value);
             return steem.api.getDynamicGlobalPropertiesAsync()
             .then((resp: any) => {
@@ -50,28 +50,28 @@ export default function(config: Config, context: Context) {
             });
         });
 
-        it("Sql endpoint has more than one source of blocks", () => {
+       it("Sql endpoint has more than one source of blocks", () => {
             const blockSources = JSON.parse(properties.filter(prop => prop.key === "block_sources")[0].value);
             expect(blockSources).to.be.an("array").with.length.greaterThan(1);
         });
 
-        it("There were more than 4 operations in last metrics period", () => {
+       it("There were more than 4 operations in last metrics period", () => {
             expect(operations).to.be.an("array").with.length.gte(4);
         });
 
-        it("Less than 20% of confirm_vote were rejections", () => {
+       it("Less than 20% of confirm_vote were rejections", () => {
             const confirmVotes = operations.filter((op: any) => op.operation_type === "confirm_vote");
             const rejections = confirmVotes.map(op => JSON.parse(op.json_str)).filter((confirmVote: any) => !confirmVote.accepted);
             expect(rejections.length).to.be.lte(confirmVotes.length / 5);
         });
 
-        it("More than 60% of voteorders are confirmed", () => {
+       it("More than 60% of voteorders are confirmed", () => {
             const confirmVotes = operations.filter((op: any) => op.operation_type === "confirm_vote");
             const voteorders = operations.filter((op: any) => op.operation_type === "send_voteorder");
             expect(confirmVotes.length).to.be.gte(voteorders.length * 0.6);
         });
 
-        it("Sql endpoint hosts swagger specs", async () => {
+       it("Sql endpoint hosts swagger specs", async () => {
             const swaggerSpecs: any = (await axios.get(endpoint)).data;
 
             expect(swaggerSpecs.host).to.be.equal(wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host);

@@ -25,12 +25,12 @@ export default function(config: Config, context: Context) {
                     expect(issues.items).to.be.an("array").with.length.gt(issues.total_count * 0.75 /* this is strange */);
                 });
 
-                it("Has no open and unassigned issues/pulls", () => {
+               it("Has no open and unassigned issues/pulls", () => {
                     const openAndUnassignedUrls: string [] = issues.items.filter((item: any) => (item.state !== "closed") && (item.assignees.length === 0)).map((item: any) => item.html_url);
                     if (openAndUnassignedUrls.length > 0) throw new Error("Issues:  [" + openAndUnassignedUrls.join(",") + "] is not closed and has no assignees.");
                 });
 
-                it("If there are more than 10 issues, the open/total issues ratio is lower than 20%", () => {
+               it("If there are more than 10 issues, the open/total issues ratio is lower than 20%", () => {
                     if (issues.items.length > 10) {
                         const open = issues.items.filter((item: any) => item.state !== "closed");
                         const total = issues.items;

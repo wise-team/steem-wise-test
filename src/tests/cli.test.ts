@@ -9,7 +9,7 @@ export default function(config: Config, context: Context) {
     describe("steem-wise-cli (tests/cli.test.ts)", function () {
         this.bail(true);
 
-        if (!config.skipDockerBuild) it("Builds without error", async function () {
+        if (!config.skipDockerBuild)it("Builds without error", async function () {
             this.timeout(60 * 1000);
             const npm: any = await import("npm");
             return new Promise((resolve, reject) => {

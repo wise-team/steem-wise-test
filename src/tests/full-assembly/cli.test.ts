@@ -30,11 +30,11 @@ export default function(config: Config, context: FullContext) {
                 expect(wiseOut.stderr.trim()).to.be.empty;
             });
 
-            it("prints help", () => {
+           it("prints help", () => {
                 expect(wiseOut.stdout).to.match(/^[\s\S]*usage: wise[\s\S]*options:[\s\S]*commands:[\s\S]*$/giu);
             });
 
-            it("help contains all commands", () => {
+           it("help contains all commands", () => {
                 expect(wiseOut.stdout.indexOf("send-voteorder") !== -1).to.be.true;
                 expect(wiseOut.stdout.indexOf("upload-rules") !== -1).to.be.true;
                 expect(wiseOut.stdout.indexOf("download-rules") !== -1).to.be.true;
@@ -50,7 +50,7 @@ export default function(config: Config, context: FullContext) {
                 expect(wiseOut.stderr.trim()).to.be.empty;
             });
 
-            it("prints help", () => {
+           it("prints help", () => {
                 expect(wiseOut.stdout).to.match(/^[\s\S]*usage: wise[\s\S]*options:[\s\S]*commands:[\s\S]*$/giu);
             });
         });
@@ -73,7 +73,7 @@ export default function(config: Config, context: FullContext) {
                                      + " --username " + config.guestAccountCredentials.account
                                      + " --dont-save-posting-key"
                                      + " \"" + tmpDir + "\"";
-            it("Executes '" + cmdInitLocalParams + "' without error", async () => {
+           it("Executes '" + cmdInitLocalParams + "' without error", async () => {
                 const cmd_ = "cd \"" + tmpDir + "\" && " + cmdInitLocalParams + " && echo \"-----\"";
                 const wiseOut: Container.Output = await cli.execToString(["sh", "-c", cmd_]);
                 expect(wiseOut.stderr.trim()).to.be.empty;
@@ -83,7 +83,7 @@ export default function(config: Config, context: FullContext) {
                 expect(wiseOut.stdout.indexOf("Wise successfully set up") !== -1).to.be.true;
             });
 
-            it("Created rules.yml, config.yml and synced-block-num.txt", async () => {
+           it("Created rules.yml, config.yml and synced-block-num.txt", async () => {
                 const lsOut: Container.Output = await cli.execToString(["ls", tmpDir]);
                 expect(lsOut.stderr.trim()).to.be.empty;
                 expect(lsOut.stdout.split("\n")).to.be.an("array").that.includes("rules.yml");
@@ -99,14 +99,14 @@ export default function(config: Config, context: FullContext) {
                     configYml = yaml.safeLoad(catOutput.stdout);
                 });
 
-                it("has correct username", () => expect(configYml.username).to.be.equal(config.guestAccountCredentials.account));
-                it("has empty posting wif", () => expect(configYml.postingWif).to.be.empty);
-                it("has link to local rules file", () => {
+               it("has correct username", () => expect(configYml.username).to.be.equal(config.guestAccountCredentials.account));
+               it("has empty posting wif", () => expect(configYml.postingWif).to.be.empty);
+               it("has link to local rules file", () => {
                     expect(configYml.defaultRulesPath.indexOf("rules.yml") !== -1).to.be.true;
                     expect(configYml.defaultRulesPath.indexOf("/") !== 0).to.be.true;
                     expect(configYml.defaultRulesPath.indexOf("..") === -1).to.be.true;
                 });
-                it("has link to local synced block num file", () => {
+               it("has link to local synced block num file", () => {
                     expect(configYml.syncedBlockNumFile.indexOf("synced-block-num.txt") !== -1).to.be.true;
                     expect(configYml.syncedBlockNumFile.indexOf("/") !== 0).to.be.true;
                     expect(configYml.syncedBlockNumFile.indexOf("..") === -1).to.be.true;
@@ -121,8 +121,8 @@ export default function(config: Config, context: FullContext) {
                     rulesYml = yaml.safeLoad(catOutput.stdout);
                 });
 
-                it("contains more than one ruleset", () => expect(rulesYml).to.be.an("array").with.length.gt(1));
-                it("rulesetForVoter has voter and rulesets", () => {
+               it("contains more than one ruleset", () => expect(rulesYml).to.be.an("array").with.length.gt(1));
+               it("rulesetForVoter has voter and rulesets", () => {
                     expect(rulesYml[0]).to.haveOwnProperty("voter");
                     expect(rulesYml[0]).to.haveOwnProperty("rulesets");
                 });
@@ -136,7 +136,7 @@ export default function(config: Config, context: FullContext) {
                     syncedBlockNum = parseInt(catOutput.stdout.trim().replace(/\D/g, ""), 10);
                 });
 
-                it("is an actual block number", async () => {
+               it("is an actual block number", async () => {
                     const dynamicGlobalProperties = await steem.api.getDynamicGlobalPropertiesAsync();
                     if (!dynamicGlobalProperties) throw new Error("Dynamic global properties are undefined");
                     const headBlockNum = dynamicGlobalProperties.head_block_number;

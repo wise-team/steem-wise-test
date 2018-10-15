@@ -26,7 +26,7 @@ export default function(config: Config, context: FullContext) {
             postingWif: config.credentials.delegator.postingKey,
         };
 
-        it("Uploads rules correctly", async function () {
+       it("Uploads rules correctly", async function () {
             this.timeout(20 * 1000);
 
             const rulesFileContents = fs.readFileSync(path.resolve(__dirname, "rules.yml"), "utf8").toString();

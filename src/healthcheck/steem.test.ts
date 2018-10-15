@@ -13,7 +13,7 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe.only("Steem using steem-js (" + __dirname + ")", function () {
+    describe("Steem using steem-js (" + __dirname + ")", function () {
         this.timeout(3500);
 
         it ("Does get_block correctly for an old block", () => {
@@ -57,7 +57,7 @@ export default function(config: Config, context: Context) {
             const requests: any [] = [];
             const responses: any [] = [];
             const assertProperRequest = async () => {
-                if (wise.config.test.live.api.testThroughProxy) {
+                if (wise.config.test.healthcheck.api.testThroughProxy) {
                     await BluebirdPromise.delay(80);
                     if (errors.length > 0) throw new Error(errors.pop());
                     expect(requests).to.be.an("array").with.length.gt(0);
@@ -69,7 +69,7 @@ export default function(config: Config, context: Context) {
                 await BluebirdPromise.delay(80);
                 }
             };
-            if (wise.config.test.live.api.testThroughProxy) before(async () => {
+            if (wise.config.test.healthcheck.api.testThroughProxy) before(async () => {
                 if (api.url.indexOf("http") === 0) {
                     proxyServer = httpProxy.createProxyServer({
                         target: api.url,
@@ -132,7 +132,7 @@ export default function(config: Config, context: Context) {
                  await assertProperRequest();
             });
 
-            if (wise.config.test.live.api.testThroughProxy) after(() => {
+            if (wise.config.test.healthcheck.api.testThroughProxy) after(() => {
                 proxyServer.close();
             });
         }));

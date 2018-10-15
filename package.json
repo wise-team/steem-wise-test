@@ -6,8 +6,7 @@
   "engines": {
     "node": ">=9.11"
   },
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "@commitlint/cli": "^7.2.0",
     "@commitlint/config-conventional": "^7.1.2",
     "@types/axios": "^0.14.0",
@@ -27,11 +26,8 @@
     "broken-link-checker": "^0.7.8",
     "chai": "^4.2.0",
     "dockerode": "^2.5.7",
-    "exit-hook": "^2.0.0",
-    "express": "^4.16.3",
     "get-stream": "^4.1.0",
     "http-proxy": "^1.17.0",
-    "husky": "^0.14.3",
     "js-yaml": "^3.12.0",
     "mocha": "^5.2.0",
     "npm": "^6.4.1",
@@ -42,11 +38,16 @@
     "tslint": "^5.11.0",
     "typescript": "^2.9.2"
   },
+  "devDependencies": {
+    "husky": "^0.14.3"
+  },
   "scripts": {
     "check": "if echo \"$(node --version)\" | grep -q \"$(cat .nvmrc)\"; then echo \"Node version correct\"; else echo \"Node version does not match that in .nvmrc\" && exit 1; fi",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "test": "npm run check && npm run tslint && mocha -r ts-node/register src/tests/entrance.ts",
     "diagnose": "npm run check && npm run tslint && mocha -r ts-node/register src/live-diagnostics/entrance.ts",
+    "healthcheck": "ts-node src/healthcheck.ts",
+    "healthcheck-compare-notify": "ts-node healthcheck/compare-and-notify.ts",
     "testall": "npm run check && npm run tslint && mocha -r ts-node/register src/*/entrance.ts",
     "commitmsg": "commitlint -E GIT_PARAMS"
   },

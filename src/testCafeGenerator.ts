@@ -36,7 +36,7 @@ export default function(config: Config, context: Context, browsers: string [], t
         });
 
 
-        it("Passes all browser tests", async () => {
+       it("Passes all browser tests", async () => {
             const image = "testcafe/testcafe";
             const cmd: string [] = [ "--no-color", "--reporter", "json", browsers.join(","), "/tests/*.js"];
             console.log(cmd);

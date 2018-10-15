@@ -10,6 +10,7 @@ import { data as wise } from "../wise-config.gen.js";
 
 import testEnvironmentTests from "../test-environment.test";
 import steemTests from "./steem.test";
+import steemconnectTests from "./steemconnect.test";
 import wiseSqlMetricsTest from "./wise-sql-metrics.test";
 import githubMonitoringTest from "./github-monitoring.test";
 import wiseManualTest from "./wise-manual.test";
@@ -23,12 +24,13 @@ const context = new Context(config);
 console.log("Loading tests...");
 testEnvironmentTests(config, context);
 steemTests(config, context);
+steemconnectTests(config, context);
 wiseSqlMetricsTest(config, context);
 wiseManualTest(config, context);
 githubMonitoringTest(config, context);
 websitesTest(config, context);
-if (wise.config.test.live.inBrowserTests.enabled) {
-    describe("voterpage-live in testcafe", () => testcafeGenerator(config, context, wise.config.test.live.inBrowserTests.browsers, path.resolve(__dirname, "voterpage-live")));
+if (wise.config.test.healthcheck.inBrowserTests.enabled) {
+    describe("voterpage-live in testcafe", () => testcafeGenerator(config, context, wise.config.test.healthcheck.inBrowserTests.browsers, path.resolve(__dirname, "voterpage-live")));
 }
 
 console.log("Loading tests done. Executing...");

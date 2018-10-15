@@ -11,18 +11,18 @@ import { Context } from "./Context";
 
 export default function(config: Config, context: Context) {
     describe("Test environment (tests/test-environment.test.ts)", () => {
-        it("Runs in correct version of nodejs", () => {
+       it("Runs in correct version of nodejs", () => {
             expect(process.version).contains(wise.config.npm.node.version);
         });
 
-        it("Required credential roles are satisfied", () => {
+       it("Required credential roles are satisfied", () => {
             config.requiredCredentialRoles.forEach(roleName => {
                 expect(config.credentials).to.haveOwnProperty(roleName)
                 .that.has.ownProperty("account");
             });
         });
 
-        it("Each credentials role is distinct", () => {
+       it("Each credentials role is distinct", () => {
             const accounts: string [] = [];
             _.forOwn(config.credentials, (role, roleName) => {
                 if (accounts.filter(name => name === role.account).length > 0) throw new Error("More than one role uses account @" + role.account);
@@ -30,7 +30,7 @@ export default function(config: Config, context: Context) {
             });
         });
 
-        it("Each credentials role account exists and has correct key", async function () {
+       it("Each credentials role account exists and has correct key", async function () {
             this.timeout(4000);
 
             const roles: { account: string; postingKey: string; } [] = [];
