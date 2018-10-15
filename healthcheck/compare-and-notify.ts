@@ -42,9 +42,15 @@ async function run() {
         .filter(name => name !== path.basename(currentLogDir))
         .sort().reverse();
         if (logBaseDirChildren.length > 0) {
-            const lastJsonResultFile = path.resolve(logBaseDir, logBaseDirChildren[0]);
-            lastJsonResult = JSON.parse(fs.readFileSync(lastJsonResultFile, "UTF-8"));
-            console.log("Loaded last json result from '" + lastJsonResultFile + "'");
+            const lastResultDir = path.resolve(logBaseDir, logBaseDirChildren[0]);
+            if (fs.existsSync(lastResultDir)) {
+                const lastJsonResultDir = path.resolve(logBaseDir, logBaseDirChildren[0]);
+                const lastJsonResultFile = path.resolve(lastJsonResultDir, "result.json");
+                if (fs.existsSync(lastJsonResultFile)) {
+                    lastJsonResult = JSON.parse(fs.readFileSync(lastJsonResultFile, "UTF-8"));
+                    console.log("Loaded last json result from '" + lastJsonResultFile + "'");
+                }
+            }
         }
 
         if (!currentJsonResult) {
