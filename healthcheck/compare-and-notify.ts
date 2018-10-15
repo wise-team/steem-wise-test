@@ -62,8 +62,6 @@ async function run() {
             }
             else {
                 out.short = "Fatal error: Tests did not produce any output. You have to check it manually";
-                out.long = "No output";
-                out.txtLog = "No output";
                 out.notify = true;
             }
         }
@@ -77,8 +75,8 @@ async function run() {
             else out.short += "_Previous test not found._";
 
             let changes: boolean = false;
-            out.long = "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
-            out.long += "\n";
+            out.short += "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
+            out.short += "\n";
             currentJsonResult.tests.forEach((test: { name: string; state: "pass" | "fail" | "pending"; message: string }) => {
                 let previousTest: { name: string; state: "pass" | "fail" | "pending"; message: string } | undefined = undefined;
                 if (lastJsonResult) {
@@ -86,7 +84,11 @@ async function run() {
                     if (prevMatches.length > 0) previousTest = prevMatches[0];
                 }
 
-                if (previousTest && previousTest.state !== test.state) {
+                if (test.state !== "pass") {
+                    out.short += " - " + /*(test.state === "pass" ? ":shamrock:" : */(test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:"))/*)*/;
+                    out.short += " " + test.state + " *" + test.name + "*: _" + test.message + " _ \n";
+                }
+                else if (previousTest && previousTest.state !== test.state) {
                     out.short += " - " + (test.state === "pass" ? ":shamrock:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
                     out.short += " [" + previousTest.state + " -> " + test.state + "] " + test.name + ": " + test.message + "\n";
                     changes = true;
@@ -97,13 +99,8 @@ async function run() {
                     changes = true;
                     out.notify = true;
                 }
-
-                if (test.state !== "pass") {
-                    out.long += " - " + /*(test.state === "pass" ? ":shamrock:" : */(test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:"))/*)*/;
-                    out.long += " " + test.state + " *" + test.name + "*: _" + test.message + "_ \n";
-                }
             });
-            out.long += "\n";
+            out.short += "\n";
             if (!changes) out.short += "*No changes since previous healthcheck* \n";
             if (currenTxtOutput) out.txtLog = "```\n" + currenTxtOutput + "\n```";
         }
@@ -114,47 +111,34 @@ async function run() {
         out.long = "*" + error.message + "*\n" + error.stack;
     }
 
-    console.log(lib.sanitizeForSlack(out.long));
-
     console.log("Sending to slack...");
     /**
      * Send to slack
      */
     const mentions = "\n" + config.mentions.map(mention => "<@" + mention + ">").join(" ");
     const attachements: any [] = [];
-    if (out.long) attachements.push({
+    if (out.long && out.long.length > 0) attachements.push({
         title: "Tests result",
         text: lib.sanitizeForSlack(out.long)
     });
 
+    if (out.txtLog && out.txtLog.length > 0) {
+        attachements.push({
+            title: "Stdout and stderr",
+            text: "```\n" + lib.sanitizeForSlack(out.txtLog) + "\n```\n",
+            mrkdwn: true,
+        });
+    }
+
     const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
     const slackMessage = {
-        text: lib.sanitizeForSlack(title + out.short)  + (out.notify ? mentions : ""),
+        text: (out.notify ? "Notification to: " + mentions : "") + lib.sanitizeForSlack(title + out.short),
         attachments: attachements,
         mrkdwn: true,
         color: (out.notify ? "#ff264f" : "#36a64f")
     };
     const response = await axios.post(webHookUrl, slackMessage);
     console.log("Message to slack sent. Got response: " + JSON.stringify(response.data, undefined, 2));
-
-
-    if (out.txtLog) {
-        console.log("Sending stdout and stderr to slack...");
-
-        const title2 = "STDOUT and STDERR of Wise healthckeck finished at " + (new Date().toISOString()) + "";
-        const slackMessage2 = {
-            text: title2,
-            attachments: [
-                {
-                    title: "Stdout and stderr",
-                    text: "```\n" + out.txtLog + "\n```\n"
-                }
-            ]
-        };
-
-        const response2 = await axios.post(webHookUrl, slackMessage2);
-        console.log("Message2 (with stdout and stderr) to slack sent. Got response: " + JSON.stringify(response2.data, undefined, 2));
-    }
 }
 
 run();
