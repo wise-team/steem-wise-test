@@ -44,9 +44,9 @@ function logTest(name: string, state: "pass" | "fail" | "pending", message: stri
 
 runner.on("start", () => { console.log(">>> start"); });
 
-runner.on("pass", (test) => { logTest(test.titlePath().join("_/_"), "pass", ""); });
-runner.on("fail", (test, error) => { logTest(test.titlePath().join("_/_"), "fail", error + ""); });
-runner.on("pending", (test) => { logTest(test.titlePath().join("_/_"), "pending", ""); });
+runner.on("pass", (test) => { logTest(test.titlePath().join(" / "), "pass", ""); });
+runner.on("fail", (test, error) => { logTest(test.titlePath().join(" / "), "fail", error + ""); });
+runner.on("pending", (test) => { logTest(test.titlePath().join(" / "), "pending", ""); });
 
 runner.on("end", () => {
     results.stats.total = runner.total;

@@ -34,7 +34,7 @@ async function run() {
 
         const txtOutputFile = path.resolve(currentLogDir, "output.txt");
         if (fs.existsSync(txtOutputFile)) {
-            currenTxtOutput = fs.readFileSync(currentJsonResultFile, "UTF-8");
+            currenTxtOutput = fs.readFileSync(txtOutputFile, "UTF-8");
         }
 
         const logBaseDirChildren = fs.readdirSync(logBaseDir)
@@ -74,12 +74,15 @@ async function run() {
                 out.notify = true;
             }
             else {
-                out.short = "Healthcheck tests performed. Passes: "
-                     + currentJsonResult.stats.passes + " (previously: " + lastJsonResult.stats.passes + ")"
-                     + ", failures: " + currentJsonResult.stats.failures + " (previously: " + lastJsonResult.stats.failures + ")"
-                     + ", pending: " + currentJsonResult.stats.pending + " (previously: " + lastJsonResult.stats.pending + ")"
-                     + " /total: " + currentJsonResult.stats.total + " (previously: " + lastJsonResult.stats.total + ")";
+                out.short = "Healthcheck tests performed _(previous->*current*)_: "
+                     + "[total: " + lastJsonResult.stats.total + "->*" + currentJsonResult.stats.total + "*] "
+                     + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
+                     + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
+                     + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] ";
                 out.short += "\n ";
+                let changes: boolean = false;
+                out.long = "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: ";
+                out.long += "```";
                 currentJsonResult.tests.forEach((test: { name: string; state: "pass" | "fail" | "pending"; message: string }) => {
                     let previousTest: { name: string; state: "pass" | "fail" | "pending"; message: string } | undefined = undefined;
                     const prevMatches = lastJsonResult.tests.filter((prevTest: any) => prevTest.name === test.name);
@@ -87,14 +90,20 @@ async function run() {
 
                     if (previousTest && previousTest.state !== test.state) {
                         out.short += "- [" + previousTest.state + " -> " + test.state + "] " + test.name + ": " + test.message + "\n";
+                        changes = true;
                         out.notify = true; // notify on test changes
                     }
                     else if (!previousTest) {
                         out.short += "- [*" + test.state + "] " + test.name + ": " + test.message + "\n";
+                        changes = true;
                         out.notify = true;
                     }
+
+                    out.long += " - [" + (test.state === "pass" ? ":white_check_mark:" : (test.state === "fail" ? ":x:" : (test.state === "pending" ? ":lock:" : ":question:")));
+                    out.long += " " + (test.state + "       ").substring(0, 7) + "] *" + test.name + "*: _" + test.message + "_ \n";
                 });
-                if (currentJsonResult) out.long = JSON.stringify(currentJsonResult, undefined, 2);
+                out.long += "```";
+                if (!changes) out.short += "No changes since previous healthcheck \n";
                 if (currenTxtOutput) out.txtLog = currenTxtOutput;
             }
         }
