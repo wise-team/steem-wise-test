@@ -37,7 +37,7 @@ async function run() {
         }
 
         const logBaseDirChildren = fs.readdirSync(logBaseDir)
-        .filter(name => !name.startsWith("."))
+        .filter(name => name.indexOf(".") !== 0)
         .filter(name => name !== path.basename(currentLogDir))
         .sort().reverse();
         if (logBaseDirChildren.length > 0) {
@@ -88,7 +88,7 @@ async function run() {
                     }
                 });
                 if (currentJsonResult) out.long = JSON.stringify(currentJsonResult, undefined, 2);
-                out.txtLog = currenTxtOutput;
+                if (currenTxtOutput) out.txtLog = currenTxtOutput;
             }
         }
     }
