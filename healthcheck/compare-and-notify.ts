@@ -103,18 +103,20 @@ async function run() {
      * Send to slack
      */
     const mentions = "\n" + config.mentions.map(mention => "@" + mention).join(" ");
-    const slackMessage = {
-        text: out.short + (out.notify ? mentions : ")"),
-        attachments: []
-    };
-    if (out.txtLog) slackMessage.attachments.push({
+    const attachements: any [] = [];
+    if (out.txtLog) attachements.push({
         title: "Stdout & stderr",
         text: out.txtLog
     });
-    if (out.long) slackMessage.attachments.push({
+    if (out.long) attachements.push({
         title: "Tests result",
         text: out.long
     });
+
+    const slackMessage = {
+        text: out.short + (out.notify ? mentions : ")"),
+        attachments: attachements
+    };
 
     const response = await axios.post(webHookUrl, slackMessage);
     console.log("Message to slack sent. Got response: " + JSON.stringify(response, undefined, 2));
