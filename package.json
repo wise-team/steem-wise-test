@@ -45,7 +45,7 @@
     "check": "if echo \"$(node --version)\" | grep -q \"$(cat .nvmrc)\"; then echo \"Node version correct\"; else echo \"Node version does not match that in .nvmrc\" && exit 1; fi",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "test": "npm run check && npm run tslint && mocha -r ts-node/register src/tests/entrance.ts",
-    "diagnose": "npm run check && npm run tslint && mocha -r ts-node/register src/live-diagnostics/entrance.ts",
+    "diagnose-healthcheck": "npm run check && npm run tslint && mocha -r ts-node/register src/healthcheck/entrance.ts",
     "healthcheck": "ts-node src/healthcheck.ts",
     "healthcheck-compare-notify": "ts-node healthcheck/compare-and-notify.ts",
     "testall": "npm run check && npm run tslint && mocha -r ts-node/register src/*/entrance.ts",
