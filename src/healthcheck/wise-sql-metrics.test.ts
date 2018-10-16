@@ -21,7 +21,7 @@ export default function(config: Config, context: Context) {
         const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - wise.config.test.healthcheck.metrics.periodMs)).toISOString();
 
         before(async function () {
-            this.timeout(4000);
+            this.timeout(8000);
 
             console.log("Loading operations from " + operationsUrl);
             const operationsResp = await axios.get(operationsUrl);
@@ -30,10 +30,9 @@ export default function(config: Config, context: Context) {
 
             console.log("Loading properties from " + endpoint + "properties");
             const propertiesResp = await axios.get(endpoint + "properties");
+            console.log("Loading properties done");
             expect(propertiesResp.data).to.be.an("array").with.length.greaterThan(0);
             properties = propertiesResp.data;
-
-            console.log("Loading properties done");
         });
 
        it("Sql endpoint has lag lower than 5 seconds", () => {

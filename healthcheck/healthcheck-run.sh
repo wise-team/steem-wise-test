@@ -14,5 +14,5 @@ then
   WEBHOOK_FILE="${DIR}/slackWebhook.url"
 fi
 
-docker run -w "/app" -v "${DIR}/slackWebhook.url:/slackWebhook.url:ro" -v "${DIR}/..:/app:ro" -v "${LOG_VOLUME}:/logs" "node:${NODE_VERSION}" /app/healthcheck/healthcheck-entrypoint.sh
+docker run -w "/app" -v "${WEBHOOK_FILE}:/slackWebhook.url:ro" -v "${DIR}/..:/app:ro" -v "${LOG_VOLUME}:/logs" "node:${NODE_VERSION}" /app/healthcheck/healthcheck-entrypoint.sh
 
