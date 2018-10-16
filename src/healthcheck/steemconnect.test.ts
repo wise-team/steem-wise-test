@@ -14,6 +14,7 @@ import { Config } from "../config";
 export default function(config: Config, context: Context) {
     describe("Steemconnect", function () {
         this.retries(2);
+        this.timeout(4000);
 
         before(() => steem.api.setOptions({ url: wise.config.steem.defaultApiUrl, /*uri: wise.config.steem.defaultApiUrl*/ }));
 

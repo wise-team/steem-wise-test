@@ -10,7 +10,10 @@ import Axios from "axios";
 
 
 export default function(config: Config, context: Context) {
-    describe("Github monitoring", () => {
+    describe("Github monitoring", function () {
+        this.timeout(4000);
+        this.retries(2);
+
         _.forOwn(wise.config.repository.repositories, (repo: { name: string }) => {
             const githubPath = wise.config.repository.github.organization + "/" + repo.name;
             describe (githubPath, () => {

@@ -81,7 +81,6 @@ export default function(config: Config, context: Context) {
         it("Sql endpoint hosts swagger specs", async () => {
             const result = await axios.get(endpoint);
             const swaggerSpecs: any = result.data;
-            console.log("Got axios result");
 
             expect(swaggerSpecs.host.indexOf(wise.config.sql.endpoint.host)).to.be.equal(0);
             expect(swaggerSpecs.basePath).to.be.equal("/");
