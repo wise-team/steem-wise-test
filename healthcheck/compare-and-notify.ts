@@ -67,10 +67,10 @@ async function run() {
         }
         else {
             out.short = "Healthcheck tests performed (previous->current): "
-                    + "[total: " + lastJsonResult.stats.total + "->*" + currentJsonResult.stats.total + "*] "
-                    + "[passes: " + lastJsonResult.stats.passes + "->*" + currentJsonResult.stats.passes + "*] "
-                    + "[pending: " + lastJsonResult.stats.pending + "->*" + currentJsonResult.stats.pending + "*] "
-                    + "[failures: " + lastJsonResult.stats.failures + "->*" + currentJsonResult.stats.failures + "*] \n";
+                    + "[total: " + (lastJsonResult ? lastJsonResult.stats.total + "->*" : "") + currentJsonResult.stats.total + "*] "
+                    + "[passes: " + (lastJsonResult ? lastJsonResult.stats.passes + "->*" : "") + currentJsonResult.stats.passes + "*] "
+                    + "[pending: " + (lastJsonResult ? lastJsonResult.stats.pending + "->*" : "") + currentJsonResult.stats.pending + "*] "
+                    + "[failures: " + (lastJsonResult ? lastJsonResult.stats.failures + "->*" : "") + currentJsonResult.stats.failures + "*] \n";
             if (lastJsonResult) out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n\n";
             else out.short += "_Previous test not found._\n\n";
 

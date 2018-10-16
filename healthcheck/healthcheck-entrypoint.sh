@@ -3,8 +3,8 @@
 mkdir -p /healthcheck
 cd /healthcheck
 
-#§ 'git clone https://github.com/' + d(data.config.repository.github.organization) + '/' + d(data.repository.name) + ' .'
-git clone https://github.com/wise-team/steem-wise-test .
+#§ 'git clone https://github.com/' + d(data.config.repository.github.organization) + '/' + d(data.repository.name) + ' . 2>&1'
+git clone https://github.com/wise-team/steem-wise-test . 2>&1
 
 
 date="$(date +"%Y_%m_%d__%H_%M_%S")";
@@ -18,4 +18,4 @@ bash -c "npm run check && npm install --only=production && npm run healthcheck" 
 echo "Tests done"
 
 # cd /app ## Comment on production
-npm run healthcheck-compare-notify # This command compares the result to the previous one and sends the diffś
+npm run healthcheck-compare-notify 2>&1 # This command compares the result to the previous one and sends the diff
