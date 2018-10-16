@@ -13,6 +13,7 @@ import { Config } from "../config";
 
 export default function(config: Config, context: Context) {
     describe("Steemconnect", function () {
+        before(() => steem.api.setOptions({ url: wise.config.steem.defaultApiUrl, /*uri: wise.config.steem.defaultApiUrl*/ }));
         describe ("Steemconnect owner account", () => {
             const ownerAccountName = wise.config.steemconnect.owner.account;
             let ownerAccount: any = undefined;

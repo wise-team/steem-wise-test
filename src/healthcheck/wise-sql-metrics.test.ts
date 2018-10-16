@@ -19,9 +19,10 @@ export default function(config: Config, context: Context) {
         let properties: { key: string, value: string } [] = [];
 
         const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - wise.config.test.healthcheck.metrics.periodMs)).toISOString();
-
         before(async function () {
             this.timeout(8000);
+
+            steem.api.setOptions({ url: wise.config.steem.defaultApiUrl, /*uri: wise.config.steem.defaultApiUrl*/ });
 
             console.log("Loading operations from " + operationsUrl);
             const operationsResp = await axios.get(operationsUrl);

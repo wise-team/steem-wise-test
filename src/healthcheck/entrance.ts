@@ -13,7 +13,6 @@ import steemTests from "./steem.test";
 import steemconnectTests from "./steemconnect.test";
 import wiseSqlMetricsTest from "./wise-sql-metrics.test";
 import githubMonitoringTest from "./github-monitoring.test";
-import wiseManualTest from "./wise-manual.test";
 import websitesTest from "./websites.test";
 import testcafeGenerator from "../testCafeGenerator";
 
@@ -26,7 +25,6 @@ testEnvironmentTests(config, context);
 steemTests(config, context);
 steemconnectTests(config, context);
 wiseSqlMetricsTest(config, context);
-wiseManualTest(config, context);
 githubMonitoringTest(config, context);
 websitesTest(config, context);
 if (wise.config.test.healthcheck.inBrowserTests.enabled) {

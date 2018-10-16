@@ -16,6 +16,8 @@ export default function(config: Config, context: Context) {
     describe("Steem using steem-js", function () {
         this.timeout(3500);
 
+        before(() => steem.api.setOptions({ url: wise.config.steem.defaultApiUrl, /*uri: wise.config.steem.defaultApiUrl*/ }));
+
         it ("Does get_block correctly for an old block", () => {
             const testBlockNum = 26194848;
             return steem.api.getBlockAsync(testBlockNum)

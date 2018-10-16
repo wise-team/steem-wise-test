@@ -19,3 +19,4 @@ echo "Tests done"
 
 # cd /app ## Comment on production
 npm run healthcheck-compare-notify 2>&1 # This command compares the result to the previous one and sends the diff
+echo "Entrypoint done"
