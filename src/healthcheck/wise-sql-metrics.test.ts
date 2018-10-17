@@ -15,7 +15,7 @@ export default function(config: Config, context: Context) {
     const endpoint = wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host + "/";
 
     describe("Wise SQL metrics", function () {
-        this.timeout(4000);
+        this.timeout(9000);
         this.retries(1);
 
         let operations: any [] = [];
@@ -27,20 +27,17 @@ export default function(config: Config, context: Context) {
 
             steem.api.setOptions({ url: wise.config.steem.defaultApiUrl, /*uri: wise.config.steem.defaultApiUrl*/ });
 
-            console.log("Loading operations from " + operationsUrl);
             const operationsResp = await axios.get(operationsUrl);
             expect(operationsResp.data).to.be.an("array").with.length.greaterThan(0);
             operations = operationsResp.data;
 
-            console.log("Loading properties from " + endpoint + "properties");
             const propertiesResp = await axios.get(endpoint + "properties");
-            console.log("Loading properties done");
             expect(propertiesResp.data).to.be.an("array").with.length.greaterThan(0);
             properties = propertiesResp.data;
         });
 
-        it("Sql endpoint has lag lower than 5 seconds", () => {
-            expect(parseInt(properties.filter(prop => prop.key === "lag")[0].value)).to.be.lessThan(5);
+        it("Sql endpoint has lag lower than 10 seconds", () => {
+            expect(parseInt(properties.filter(prop => prop.key === "lag")[0].value)).to.be.lessThan(10);
         });
 
         it("Sql endpoint has lag updated at most 5 minutes ago", () => {
@@ -93,9 +90,28 @@ export default function(config: Config, context: Context) {
             expect(swaggerSpecs.definitions.properties.properties).to.include.all.keys("key", "value");
         });
 
-        /*it("Sql endpoint hosts swagger UI that points correctly to the api", async () => {
-            const resp = await axios.get("http://sql.wise.vote:80/", { responseType: "text" });
+        it("Sql endpoint hosts swagger UI that points correctly to the api", async () => {
+            const resp = await axios.get(endpoint + "doc", { responseType: "text" });
             expect(resp.data.indexOf("id=\"swagger-ui\"") !== -1).to.be.true;
-        });*/
+        });
+
+        it("Sql endpoint [GET /operations] responds with a header with proper protocol version", async () => {
+            const response = await axios.get(endpoint + "operations?limit=1");
+            expect(response.headers).to.include.keys("wisesql-protocol-version");
+            expect(response.headers["wisesql-protocol-version"]).to.be.equal(wise.config.sql.protocol.version);
+        });
+
+        it("Sql endpoint [GET /rpc/rulesets_by_delegator_at_moment] responds with a header with proper protocol version", async () => {
+            const response = await axios.get(endpoint + "rpc/rulesets_by_delegator_at_moment?delegator=noisy&moment=999999999999");
+            expect(response.headers).to.include.keys("wisesql-protocol-version");
+            expect(response.headers["wisesql-protocol-version"]).to.be.equal(wise.config.sql.protocol.version);
+        });
+
+        it("Sql endpoint [POST /rpc/rulesets_by_delegator_at_moment] responds with a header with proper protocol version", async () => {
+            const response = await axios.post(endpoint + "rpc/rulesets_by_delegator_at_moment",
+                { delegator: "noisy", moment: "999999999999" });
+            expect(response.headers).to.include.keys("wisesql-protocol-version");
+            expect(response.headers["wisesql-protocol-version"]).to.be.equal(wise.config.sql.protocol.version);
+        });
     });
 }
