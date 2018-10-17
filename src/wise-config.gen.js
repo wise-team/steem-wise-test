@@ -10,7 +10,7 @@ export const data = {
       "code": "MIT",
     },
     "wise": {
-      "version": "1.2.2",
+      "version": "2.0.0",
       "homepage": "https://wise.vote/",
     },
     "steem": {
@@ -49,7 +49,7 @@ export const data = {
     },
     "npm": {
       "node": {
-        "version": "9.11",
+        "version": "10.12",
       },
       "keywords": [ "steem", "blockchain", "wise" ],
       "author": "The Wise Team (https://wise-team.io/)",
@@ -59,9 +59,9 @@ export const data = {
       "maintainer": "The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>",
       "labels": {
         "domain": "vote.wise",
-        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"1.2.2\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-test\"" ],
+        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"2.0.0\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-test\"" ],
       },
-      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"1.2.2\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-test\"",
+      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"2.0.0\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-test\"",
     },
     "repository": {
       "github": {
@@ -133,6 +133,9 @@ export const data = {
       },
     },
     "sql": {
+      "protocol": {
+        "version": "1.0",
+      },
       "pusher": {
         "requestConcurrencyPerNode": 3,
         "blockProcessingTimeoutMs": 9000,
@@ -155,6 +158,10 @@ export const data = {
           "postgrest": {
             "name": "postgrest",
             "container": "wise-sql-postgrest",
+          },
+          "api_proxy": {
+            "name": "wise_sql_api_proxy",
+            "container": "wise_sql_api_proxy",
           },
         },
         "volumes": {
@@ -270,10 +277,10 @@ export const data = {
         "icon": "https://wise.vote/assets/wise-full-color-icon-128.png",
         "website": "https://wise.vote/",
         "beneficiaries": null,
-        "is_public": false,
+        "is_public": true,
         "is_disabled": false,
         "created_at": "2018-07-06T09:53:05.827Z",
-        "updated_at": "2018-09-21T13:20:47.021Z",
+        "updated_at": "2018-10-16T15:00:15.365Z",
       },
     },
   },
