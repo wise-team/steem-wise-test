@@ -11,7 +11,7 @@ import Axios from "axios";
 
 export default function(config: Config, context: Context) {
     describe("Github monitoring", function () {
-        this.timeout(4000);
+        this.timeout(8000);
         this.retries(2);
 
         _.forOwn(wise.config.repository.repositories, (repo: { name: string }) => {
@@ -33,12 +33,12 @@ export default function(config: Config, context: Context) {
                     if (openAndUnassignedUrls.length > 0) throw new Error("Issues:  [" + openAndUnassignedUrls.join(",") + "] is not closed and has no assignees.");
                 });
 
-               it("If there are more than 10 issues, the open/total issues ratio is lower than 20%", () => {
+               it("If there are more than 10 issues, the open/total issues ratio is lower than 50%", () => {
                     if (issues.items.length > 10) {
                         const open = issues.items.filter((item: any) => item.state !== "closed");
                         const total = issues.items;
 
-                        expect(open).to.have.length.lessThan(total.length * 0.2);
+                        expect(open).to.have.length.lessThan(total.length * 0.5);
                     }
                 });
             });
