@@ -135,6 +135,7 @@ export const data = {
     "sql": {
       "protocol": {
         "version": "1.0",
+        "maxRowsPerPage": 1000,
       },
       "pusher": {
         "requestConcurrencyPerNode": 3,

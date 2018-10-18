@@ -14,7 +14,7 @@ import { Context } from "../Context";
 export default function(config: Config, context: Context) {
     const endpoint = wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host + "/";
 
-    describe("Wise SQL metrics", function () {
+    describe.only("Wise SQL metrics", function () {
         this.timeout(9000);
         this.retries(1);
 
@@ -101,10 +101,22 @@ export default function(config: Config, context: Context) {
             expect(response.headers["wisesql-protocol-version"]).to.be.equal(wise.config.sql.protocol.version);
         });
 
+        it("Sql endpoint [GET /operations] responds with a 'wisesql-max-rows-per-page header' that has correct value", async () => {
+            const response = await axios.get(endpoint + "operations?limit=1");
+            expect(response.headers).to.include.keys("wisesql-max-rows-per-page");
+            expect(response.headers["wisesql-max-rows-per-page"]).to.be.equal(wise.config.sql.protocol.maxRowsPerPage + "");
+        });
+
         it("Sql endpoint [GET /rpc/rulesets_by_delegator_at_moment] responds with a header with proper protocol version", async () => {
             const response = await axios.get(endpoint + "rpc/rulesets_by_delegator_at_moment?delegator=noisy&moment=999999999999");
             expect(response.headers).to.include.keys("wisesql-protocol-version");
             expect(response.headers["wisesql-protocol-version"]).to.be.equal(wise.config.sql.protocol.version);
+        });
+
+        it("Sql endpoint [GET /rpc/rulesets_by_delegator_at_moment] responds with a 'wisesql-max-rows-per-page header' that has correct value", async () => {
+            const response = await axios.get(endpoint + "rpc/rulesets_by_delegator_at_moment?delegator=noisy&moment=999999999999");
+            expect(response.headers).to.include.keys("wisesql-max-rows-per-page");
+            expect(response.headers["wisesql-max-rows-per-page"]).to.be.equal(wise.config.sql.protocol.maxRowsPerPage + "");
         });
 
         it("Sql endpoint [POST /rpc/rulesets_by_delegator_at_moment] responds with a header with proper protocol version", async () => {
@@ -112,6 +124,13 @@ export default function(config: Config, context: Context) {
                 { delegator: "noisy", moment: "999999999999" });
             expect(response.headers).to.include.keys("wisesql-protocol-version");
             expect(response.headers["wisesql-protocol-version"]).to.be.equal(wise.config.sql.protocol.version);
+        });
+
+        it("Sql endpoint [POST /rpc/rulesets_by_delegator_at_moment] responds with a 'wisesql-max-rows-per-page header' that has correct value", async () => {
+            const response = await axios.post(endpoint + "rpc/rulesets_by_delegator_at_moment",
+                { delegator: "noisy", moment: "999999999999" });
+            expect(response.headers).to.include.keys("wisesql-max-rows-per-page");
+            expect(response.headers["wisesql-max-rows-per-page"]).to.be.equal(wise.config.sql.protocol.maxRowsPerPage + "");
         });
     });
 }
