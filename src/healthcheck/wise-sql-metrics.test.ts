@@ -14,7 +14,7 @@ import { Context } from "../Context";
 export default function(config: Config, context: Context) {
     const endpoint = wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host + "/";
 
-    describe.only("Wise SQL metrics", function () {
+    describe("Wise SQL metrics", function () {
         this.timeout(9000);
         this.retries(1);
 
