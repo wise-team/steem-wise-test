@@ -33,7 +33,7 @@ async function run() {
         const currentJsonResultFile = path.resolve(currentLogDir, "result.json");
         if (fs.existsSync(currentJsonResultFile)) {
             currentJsonResult = JSON.parse(fs.readFileSync(currentJsonResultFile, "UTF-8"));
-            out.logLinks += " <" + hostedLogsBaseUrl + currentJsonResultFile + ">";
+            out.logLinks += " <" + hostedLogsBaseUrl + path.relative(logBaseDir, currentJsonResultFile) + ">";
         }
 
         const txtOutputFile = path.resolve(currentLogDir, "output.txt");
@@ -69,11 +69,11 @@ async function run() {
             }
         }
         else {
-            out.short = "Healthcheck tests performed (previous->current): "
+            out.short = "*Healthcheck " + (new Date().toISOString()) + "* (previous->current): "
                     + "[total: " + (lastJsonResult ? lastJsonResult.stats.total + "->*" : "") + currentJsonResult.stats.total + "*] "
                     + "[passes: " + (lastJsonResult ? lastJsonResult.stats.passes + "->*" : "") + currentJsonResult.stats.passes + "*] "
                     + "[pending: " + (lastJsonResult ? lastJsonResult.stats.pending + "->*" : "") + currentJsonResult.stats.pending + "*] "
-                    + "[failures: " + (lastJsonResult ? lastJsonResult.stats.failures + "->*" : "") + currentJsonResult.stats.failures + "*] \n";
+                    + "[failures: " + (lastJsonResult ? lastJsonResult.stats.failures + "->*" : "") + currentJsonResult.stats.failures + "*] ";
             if (lastJsonResult) out.short += "_Changes since previous test (one that finished at " + lastJsonResult.endTime + ". Its results are in " + lastResultDir + "):_\n\n";
             else out.short += "_Previous test not found._\n\n";
 
@@ -122,9 +122,8 @@ async function run() {
     console.log("Sending to slack...");
     const mentions = "\n" + config.mentions.map((mention: string) => "<@" + mention + ">").join(" ");
 
-    const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
     const slackMessage = {
-        text: (out.notify ? "Notification to: " + mentions + " " : "")  + lib.sanitizeForSlack(title + out.short) + "Logs: " + out.logLinks,
+        text: (out.notify ? "Notification to: " + mentions + " " : "")  + lib.sanitizeForSlack(out.short) + "Logs: " + out.logLinks,
         color: (out.notify ? "#ff264f" : "#36a64f")
     };
     const response = await axios.post(webHookUrl, slackMessage);
