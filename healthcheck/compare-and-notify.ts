@@ -39,7 +39,7 @@ async function run() {
         const txtOutputFile = path.resolve(currentLogDir, "output.txt");
         if (fs.existsSync(txtOutputFile)) {
             currenTxtOutput = fs.readFileSync(txtOutputFile, "UTF-8");
-            out.logLinks += " <" + hostedLogsBaseUrl + txtOutputFile + ">";
+            out.logLinks += " <" + hostedLogsBaseUrl + path.relative(logBaseDir, txtOutputFile) + ">";
         }
 
         const logBaseDirChildren = fs.readdirSync(logBaseDir)
@@ -105,7 +105,6 @@ async function run() {
                 }
             });
             out.short += "\n";
-            out.short += "Start time: " + currentJsonResult.startTime + ", end time: " + currentJsonResult.endTime + ". Tests: \n";
 
             out.short += "\n";
             if (!changes) out.short += "*No changes since previous healthcheck* \n";
@@ -125,7 +124,7 @@ async function run() {
 
     const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
     const slackMessage = {
-        text: (out.notify ? "Notification to: " + mentions + "\n" : "")  + lib.sanitizeForSlack(title + out.short) + "\n" + out.logLinks,
+        text: (out.notify ? "Notification to: " + mentions + " " : "")  + lib.sanitizeForSlack(title + out.short) + "Logs: " + out.logLinks,
         color: (out.notify ? "#ff264f" : "#36a64f")
     };
     const response = await axios.post(webHookUrl, slackMessage);
