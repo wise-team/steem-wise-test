@@ -12,7 +12,7 @@ export HOSTED_LOGS_URL="https://test.wise.vote/"
 
 date="$(date +"%Y_%m_%d__%H_%M_%S")";
 echo "Generating uid"
-uid="$(od -x /dev/random | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')"
+uid="$(od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')"
 export LOG_BASE_DIR="/logs"
 export CURRENT_LOG_DIR="${LOG_BASE_DIR}/${date}-${uid}"
 echo 'Creating log directory ${CURRENT_LOG_DIR}'
