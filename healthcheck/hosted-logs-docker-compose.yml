@@ -9,8 +9,8 @@ services:
   #§ d(data.config.test.healthcheck.docker.services.hostedLogs.name) + ':'
   wise_healthcheck_hosted_logs:
     image: nginx
-    #§ 'container_name: ' + data.config.test.healthcheck.docker.services.hostedLogs.container+ ':'
-    container_name: wise_healthcheck_hosted_logs:
+    #§ 'container_name: ' + data.config.test.healthcheck.docker.services.hostedLogs.container
+    container_name: wise_healthcheck_hosted_logs
     expose:
       - 80
     networks:
