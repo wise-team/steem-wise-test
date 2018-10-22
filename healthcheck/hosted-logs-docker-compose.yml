@@ -1,0 +1,32 @@
+version: "3"
+
+networks:
+  proxy-tier:
+    external:
+       name: caddy-proxy
+
+services:
+  #§ d(data.config.test.healthcheck.docker.services.hostedLogs.name) + ':'
+  wise_healthcheck_hosted_logs:
+    image: nginx
+    #§ 'container_name: ' + data.config.test.healthcheck.docker.services.hostedLogs.container+ ':'
+    container_name: wise_healthcheck_hosted_logs:
+    expose:
+      - 80
+    networks:
+      - proxy-tier
+    volumes:
+      - wise.test.logs:/usr/share/nginx/html/:ro #§< '- ' + d(data.config.test.healthcheck.log.dockerVolume) + ':/usr/share/nginx/html/:ro'
+    
+    environment:
+      #§ "VIRTUAL_HOST: \"" + data.config.test.healthcheck.hostedLogs.host + "\""
+      VIRTUAL_HOST: "test.wise.vote"
+      VIRTUAL_NETWORK: "caddy-proxy"
+      VIRTUAL_PORT: 80
+      #§ "CADDY_TLS: \"" + data.config.test.healthcheck.hostedLogs.tls + "\""
+      CADDY_TLS: "yes"
+      CADDY_TIMEOUTS: "read 5m, write 2m"
+
+
+volumes:
+  wise.test.logs: #§< d(data.config.test.healthcheck.log.dockerVolume) + ':'

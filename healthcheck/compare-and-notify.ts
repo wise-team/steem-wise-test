@@ -7,8 +7,7 @@ import { config } from "./config";
 async function run() {
     const out = {
         short: "",
-        long: "",
-        txtLog: "",
+        logLinks: "",
         notify: false
     };
 
@@ -23,6 +22,9 @@ async function run() {
         const currentLogDir = process.env.CURRENT_LOG_DIR;
         if (!currentLogDir) throw new Error("CURRENT_LOG_DIR env must be defined");
 
+        const hostedLogsBaseUrl = process.env.HOSTED_LOGS_URL;
+        if (!hostedLogsBaseUrl) throw new Error("HOSTED_LOGS_URL env must be defined");
+
         let currentJsonResult: any | undefined = undefined;
         let currenTxtOutput: string | undefined = undefined;
         let lastJsonResult: any | undefined = undefined;
@@ -31,11 +33,13 @@ async function run() {
         const currentJsonResultFile = path.resolve(currentLogDir, "result.json");
         if (fs.existsSync(currentJsonResultFile)) {
             currentJsonResult = JSON.parse(fs.readFileSync(currentJsonResultFile, "UTF-8"));
+            out.logLinks += " <" + hostedLogsBaseUrl + currentJsonResultFile + ">";
         }
 
         const txtOutputFile = path.resolve(currentLogDir, "output.txt");
         if (fs.existsSync(txtOutputFile)) {
             currenTxtOutput = fs.readFileSync(txtOutputFile, "UTF-8");
+            out.logLinks += " <" + hostedLogsBaseUrl + txtOutputFile + ">";
         }
 
         const logBaseDirChildren = fs.readdirSync(logBaseDir)
@@ -57,7 +61,6 @@ async function run() {
         if (!currentJsonResult) {
             if (currenTxtOutput) {
                 out.short = "Error: Tests did not produce correct JSON output. Here is the output log:";
-                out.long = out.txtLog = currenTxtOutput;
                 out.notify = true;
             }
             else {
@@ -106,38 +109,23 @@ async function run() {
 
             out.short += "\n";
             if (!changes) out.short += "*No changes since previous healthcheck* \n";
-            if (currenTxtOutput) out.txtLog = currenTxtOutput;
         }
     }
     catch (error) {
         console.error(error);
         out.short = "Error: " + error;
-        out.long = "*" + error.message + "*\n" + error.stack;
+        out.short += "*" + error.message + "*\n" + error.stack;
     }
-
 
     /**
      * Send to slack
      */
     console.log("Sending to slack...");
     const mentions = "\n" + config.mentions.map((mention: string) => "<@" + mention + ">").join(" ");
-    const attachements: any [] = [];
-    if (out.long && out.long.length > 0) attachements.push({
-        title: "Tests result",
-        text: lib.sanitizeForSlack(out.long)
-    });
-
-    if (out.txtLog && out.txtLog.length > 0) {
-        attachements.push({
-            title: "Stdout and stderr",
-            text: out.txtLog
-        });
-    }
 
     const title = "*Wise healthckeck finished at " + (new Date().toISOString()) + "* \n";
     const slackMessage = {
-        text: (out.notify ? "Notification to: " + mentions + "\n" : "")  + lib.sanitizeForSlack(title + out.short),
-        attachments: attachements,
+        text: (out.notify ? "Notification to: " + mentions + "\n" : "")  + lib.sanitizeForSlack(title + out.short) + "\n" + out.logLinks,
         color: (out.notify ? "#ff264f" : "#36a64f")
     };
     const response = await axios.post(webHookUrl, slackMessage);
