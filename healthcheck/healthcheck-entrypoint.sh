@@ -15,7 +15,7 @@ echo "Generating uid"
 uid="$(od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')"
 export LOG_BASE_DIR="/logs"
 export CURRENT_LOG_DIR="${LOG_BASE_DIR}/${date}-${uid}"
-echo 'Creating log directory ${CURRENT_LOG_DIR}'
+echo "Creating log directory ${CURRENT_LOG_DIR}"
 mkdir "${CURRENT_LOG_DIR}"
 
 echo "Running tests"
