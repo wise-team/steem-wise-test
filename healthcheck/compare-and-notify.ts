@@ -112,7 +112,7 @@ async function run() {
     }
     catch (error) {
         console.error(error);
-        out.short = "Error: " + error;
+        out.short += "Error: " + error;
         out.short += "*" + error.message + "*\n" + error.stack;
     }
 
@@ -123,7 +123,7 @@ async function run() {
     const mentions = "\n" + config.mentions.map((mention: string) => "<@" + mention + ">").join(" ");
 
     const slackMessage = {
-        text: (out.notify ? "Notification to: " + mentions + " " : "")  + lib.sanitizeForSlack(out.short) + "Logs: " + out.logLinks,
+        text: (out.notify ? "Notification to: " + mentions + " " : "")  + lib.sanitizeForSlack(out.short) + " Logs: " + out.logLinks,
         color: (out.notify ? "#ff264f" : "#36a64f")
     };
     const response = await axios.post(webHookUrl, slackMessage);

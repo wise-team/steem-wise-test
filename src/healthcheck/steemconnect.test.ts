@@ -12,7 +12,7 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe.only("Steemconnect", function () {
+    describe("Steemconnect", function () {
         this.retries(2);
         this.timeout(4000);
 
