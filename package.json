@@ -1,6 +1,6 @@
 {
   "name": "steem-wise-test",
-  "version": "2.0.0",
+  "version": "2.2.2",
   "description": "System tests for steem wise",
   "directories": {},
   "engines": {
@@ -32,7 +32,7 @@
     "mocha": "^5.2.0",
     "npm": "^6.4.1",
     "steem": "^0.7.2",
-    "steem-wise-core": "^2.0.0",
+    "steem-wise-core": "^2.2.2",
     "tar-fs": "^1.16.3",
     "ts-node": "^6.2.0",
     "tslint": "^5.11.0",
