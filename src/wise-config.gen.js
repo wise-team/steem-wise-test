@@ -227,7 +227,7 @@ export const data = {
           "dockerVolume": "wise.test.logs",
         },
         "slack": {
-          "mentionUsers": [ "UAEGKTY3T" ],
+          "mentionUsers": [ "UAEGKTY3T", "UASN9CGJ0" ],
           "webhookUrlFilePath": "/opt/wise/slackWebhook.url",
         },
       },
