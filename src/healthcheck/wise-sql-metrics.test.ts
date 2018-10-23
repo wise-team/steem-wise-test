@@ -2,7 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import axios from "axios";
 import * as _ from "lodash";
-import * as steem from "steem";
+import * as steemJs from "steem";
 
 import { data as wise } from "../wise-config.gen.js";
 
@@ -18,14 +18,14 @@ export default function(config: Config, context: Context) {
         this.timeout(9000);
         this.retries(1);
 
+        const steem = new steemJs.api.Steem({ url: wise.config.steem.defaultApiUrl });
+
         let operations: any [] = [];
         let properties: { key: string, value: string } [] = [];
 
         const operationsUrl = endpoint + "operations?order=moment.desc&timestamp=gt." + new Date((Date.now() - wise.config.test.healthcheck.metrics.periodMs)).toISOString();
         before(async function () {
             this.timeout(8000);
-
-            steem.api.setOptions({ url: wise.config.steem.defaultApiUrl, /*uri: wise.config.steem.defaultApiUrl*/ });
 
             const operationsResp = await axios.get(operationsUrl);
             expect(operationsResp.data).to.be.an("array").with.length.greaterThan(0);
@@ -47,7 +47,7 @@ export default function(config: Config, context: Context) {
 
         it("Sql endpoint is at most 10 blocks away from the head block", () => {
             const lastProcessedBlock = parseInt(properties.filter(prop => prop.key === "last_processed_block")[0].value);
-            return steem.api.getDynamicGlobalPropertiesAsync()
+            return steem.getDynamicGlobalPropertiesAsync()
             .then((resp: any) => {
                 const headBlockNum: number = resp.head_block_number;
                 expect(lastProcessedBlock).to.be.greaterThan(headBlockNum - 10);

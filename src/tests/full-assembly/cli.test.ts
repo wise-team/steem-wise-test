@@ -7,9 +7,10 @@ import * as fs from "fs";
 import * as Docker from "dockerode";
 import * as _ from "lodash";
 import { Wise } from "steem-wise-core";
+import { data as wise } from "../../wise-config.gen";
 import * as getStream from "get-stream";
 import * as BluebirdPromise from "bluebird";
-import * as steem from "steem";
+import * as steemJs from "steem";
 
 import { Config } from "../../Config";
 import { FullContext } from "../../FullContext";
@@ -137,6 +138,7 @@ export default function(config: Config, context: FullContext) {
                 });
 
                it("is an actual block number", async () => {
+                    const steem = new steemJs.api.Steem({ url: wise.config.steem.defaultApiUrl });
                     const dynamicGlobalProperties = await steem.api.getDynamicGlobalPropertiesAsync();
                     if (!dynamicGlobalProperties) throw new Error("Dynamic global properties are undefined");
                     const headBlockNum = dynamicGlobalProperties.head_block_number;

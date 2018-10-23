@@ -3,7 +3,7 @@ import "mocha";
 import * as fs from "fs";
 import * as _ from "lodash";
 import axios from "axios";
-import * as steem from "steem";
+import * as steemJs from "steem";
 import * as BluebirdPromise from "bluebird";
 
 import { data as wise } from "../wise-config.gen.js";
@@ -12,18 +12,18 @@ import { Config } from "../config";
 
 
 export default function(config: Config, context: Context) {
-    describe("Steemconnect", function () {
+    describe.only("Steemconnect", function () {
         this.retries(2);
         this.timeout(4000);
 
-        before(() => steem.api.setOptions({ url: wise.config.steem.defaultApiUrl, /*uri: wise.config.steem.defaultApiUrl*/ }));
+        const steem = new steemJs.api.Steem({ url: wise.config.steem.defaultApiUrl });
 
         describe ("Steemconnect owner account", () => {
             const ownerAccountName = wise.config.steemconnect.owner.account;
             let ownerAccount: any = undefined;
-            before(async () => ownerAccount = (await steem.api.getAccountsAsync([ ownerAccountName ]))[0]);
+            before(async () => ownerAccount = (await steem.getAccountsAsync([ ownerAccountName ]))[0]);
 
-            it ("had owner never updated", () => expect(ownerAccount.last_owner_update).is.equal(wise.config.steemconnect.owner.last_owner_update));
+            it ("has not been silently changed", () => expect(ownerAccount.last_owner_update).is.equal(wise.config.steemconnect.owner.last_owner_update));
 
             it ("has not been silently updated", () => expect(ownerAccount.last_account_update).is.equal(wise.config.steemconnect.owner.last_account_update));
 
@@ -44,15 +44,17 @@ export default function(config: Config, context: Context) {
 
                 expect(ownerAccount.active.weight_threshold).is.equal(1);
                 expect(ownerAccount.active.account_auths).is.an("array").with.length(0);
-                expect(ownerAccount.active.key_auths).is.an("array").with.length(1);
-                expect(ownerAccount.active.key_auths[0][0]).is.equal(wise.config.steemconnect.owner.keys.active);
-                expect(ownerAccount.active.key_auths[0][1]).is.equal(1);
+                expect(ownerAccount.active.key_auths).is.an("array").with.length(wise.config.steemconnect.owner.keys.active.length);
+                expect(
+                    ownerAccount.active.key_auths.filter((kA: [string, number]) => wise.config.steemconnect.owner.keys.active.indexOf(kA[0]) !== -1 && kA[1] === 1)
+                ).to.have.length(ownerAccount.active.key_auths.length);
 
                 expect(ownerAccount.posting.weight_threshold).is.equal(1);
                 expect(ownerAccount.posting.account_auths).is.an("array").with.length(0);
-                expect(ownerAccount.posting.key_auths).is.an("array").with.length(1);
-                expect(ownerAccount.posting.key_auths[0][0]).is.equal(wise.config.steemconnect.owner.keys.posting);
-                expect(ownerAccount.posting.key_auths[0][1]).is.equal(1);
+                expect(ownerAccount.posting.key_auths).is.an("array").with.length(wise.config.steemconnect.owner.keys.posting.length);
+                expect(
+                    ownerAccount.posting.key_auths.filter((kA: [string, number]) => wise.config.steemconnect.owner.keys.posting.indexOf(kA[0]) !== -1 && kA[1] === 1)
+                ).to.have.length(ownerAccount.posting.key_auths.length);
 
                 expect(ownerAccount.memo_key).is.equal(wise.config.steemconnect.owner.keys.memo);
             });
@@ -67,7 +69,7 @@ export default function(config: Config, context: Context) {
         describe ("Steemconnect app account", () => {
             const appAccountName = wise.config.steemconnect.app.account;
             let appAccount: any = undefined;
-            before(async () => appAccount = (await steem.api.getAccountsAsync([ appAccountName ]))[0]);
+            before(async () => appAccount = (await steem.getAccountsAsync([ appAccountName ]))[0]);
 
             it ("had owner never updated", () => expect(appAccount.last_owner_update).is.equal(wise.config.steemconnect.app.last_owner_update));
 

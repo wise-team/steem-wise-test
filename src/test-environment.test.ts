@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 import * as _ from "lodash";
-import * as steem from "steem";
+import * as steemJs from "steem";
 import * as BluebirdPromise from "bluebird";
 import { data as wise } from "./wise-config.gen.js";
 
@@ -36,14 +36,16 @@ export default function(config: Config, context: Context) {
             const roles: { account: string; postingKey: string; } [] = [];
             _.forOwn(config.credentials, (role, roleName) => roles.push(role));
 
+            const steem = new steemJs.api.Steem({ url: wise.config.steem.defaultApiUrl });
+
             return BluebirdPromise.resolve(roles)
             .mapSeries((role: any) => {
-                return steem.api.getAccountsAsync([ role.account ])
+                return steem.getAccountsAsync([ role.account ])
                 .then((result: any []) => {
                     if (result.length < 1) throw new Error("Account @" + role.account + " does not exist");
 
                     const pubWif = result[0].posting.key_auths[0][0];
-                    const isValid = steem.auth.wifIsValid(role.postingKey, pubWif);
+                    const isValid = steemJs.auth.wifIsValid(role.postingKey, pubWif);
                     expect(isValid, "Private key for @" + role.account + " is valid").to.be.true;
                 });
             });
