@@ -16,7 +16,7 @@ services:
     networks:
       - proxy-tier
     volumes:
-      - "wise.test.logs:/usr/share/nginx/html/:ro" #§< '- ""' + d(data.config.test.healthcheck.log.dockerVolume) + ':/usr/share/nginx/html:ro"'
+      - ""wise.test.logs:/usr/share/nginx/html:ro" #§< '- ""' + d(data.config.test.healthcheck.log.dockerVolume) + ':/usr/share/nginx/html:ro"'
     environment:
       #§ "VIRTUAL_HOST: \"" + data.config.test.healthcheck.hostedLogs.host + "\""
       VIRTUAL_HOST: "test.wise.vote"
@@ -25,6 +25,7 @@ services:
       #§ "CADDY_TLS: \"" + data.config.test.healthcheck.hostedLogs.tls + "\""
       CADDY_TLS: "yes"
       CADDY_TIMEOUTS: "read 5m, write 2m"
+    restart: always
 
 
 volumes:
