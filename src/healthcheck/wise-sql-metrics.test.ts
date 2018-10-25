@@ -12,7 +12,7 @@ import { Context } from "../Context";
 
 
 export default function(config: Config, context: Context) {
-    const endpoint = wise.config.sql.endpoint.schema + "://" + wise.config.sql.endpoint.host + "/";
+    const endpoint = wise.config.sql.url[config.environmentType];
 
     describe("Wise SQL metrics", function () {
         this.timeout(9000);
@@ -79,7 +79,7 @@ export default function(config: Config, context: Context) {
             const result = await axios.get(endpoint);
             const swaggerSpecs: any = result.data;
 
-            expect(swaggerSpecs.host.indexOf(wise.config.sql.endpoint.host)).to.be.equal(0);
+            expect(swaggerSpecs.host.indexOf(new URL(endpoint).host)).to.be.equal(0);
             expect(swaggerSpecs.basePath).to.be.equal("/");
             expect(swaggerSpecs.schemes).to.deep.equal(["https"]);
 

@@ -46,6 +46,7 @@ export class Config {
     public requiredCredentialRoles: string [] = [ "delegator", "voter1", "voter2" ];
     public credentialsFilePath = "credentials.yml";
 
+    public environmentType: "staging" | "production";
     /**
      * Loads credentials into config
      */
@@ -54,8 +55,11 @@ export class Config {
             const credentialsFileContents = fs.readFileSync(this.credentialsFilePath, "utf8").toString();
             this.credentials = yaml.safeLoad(credentialsFileContents);
         }
-    }
 
+        if (!process.env.WISE_ENVIRONMENT_TYPE || [ "production", "staging" ].indexOf(process.env.WISE_ENVIRONMENT_TYPE) < 0)
+            throw new Error("You must define env WISE_ENVIRONMENT_TYPE that contains one of [ production, staging ]");
+        this.environmentType = process.env.WISE_ENVIRONMENT_TYPE as any;
+    }
 }
 
 export namespace Config {
