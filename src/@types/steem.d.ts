@@ -79,7 +79,7 @@ declare module 'steem' {
         voting_power: number;
         withdraw_routes: number;
         withdrawn: number;
-        witness_votes: number;
+        witness_votes: string [];
         witnesses_voted_for: number;
         [x: string]: any; // allows other properties
     }
@@ -632,12 +632,14 @@ declare module 'steem' {
             login: any;
             loginAsync: any;
             loginWith: any;
-            loginWithAsync: any;
-            lookupAccountNames: any;
-            lookupAccountNamesAsync: any;
-            lookupAccountNamesWith: any;
-            lookupAccountNamesWithAsync: any;
-            lookupAccounts: any;
+            loginWithAsync: any;*/
+
+            // lookupAccountNames: any;
+            public lookupAccountNamesAsync(accountNames: string []): Promise<any []>; // TODO what is the type?;
+            // lookupAccountNamesWith: any;
+            // lookupAccountNamesWithAsync: any;
+
+            /*lookupAccounts: any;
             lookupAccountsAsync: any;
             lookupAccountsWith: any;
             lookupAccountsWithAsync: any;

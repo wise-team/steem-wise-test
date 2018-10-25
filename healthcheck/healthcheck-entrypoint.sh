@@ -7,8 +7,11 @@ cd /healthcheck
 git clone https://github.com/wise-team/steem-wise-test . 2>&1
 echo "Clone ok"
 
-#§ 'export HOSTED_LOGS_URL="' + (data.config.test.healthcheck.hostedLogs.tls === "yes" ? "https://" : "http://") + d(data.config.test.healthcheck.hostedLogs.host) + '/"'
-export HOSTED_LOGS_URL="https://test.wise.vote/"
+#§ 'export HOSTED_LOGS_PRODUCTION="' + d(data.config.test.healthcheck.hostedLogs.url.production) + '"'
+export HOSTED_LOGS_PRODUCTION="https://test.wise.vote/"
+
+#§ 'export HOSTED_LOGS_STAGING="' + d(data.config.test.healthcheck.hostedLogs.url.staging) + '"'
+export HOSTED_LOGS_STAGING="http://test.dev.wise.vote/"
 
 date="$(date +"%Y_%m_%d__%H_%M_%S")";
 echo "Generating uid"

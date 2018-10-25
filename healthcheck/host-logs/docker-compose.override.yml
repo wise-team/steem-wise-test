@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  #§ d(data.config.test.healthcheck.docker.services.hostedLogs.name) + ':'
+  wise_healthcheck_hosted_logs:
+    ports:
+      - "8082:80"
+
