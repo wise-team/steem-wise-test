@@ -11,7 +11,7 @@ echo "Clone ok"
 export HOSTED_LOGS_PRODUCTION="https://test.wise.vote/"
 
 #§ 'export HOSTED_LOGS_STAGING="' + d(data.config.test.healthcheck.hostedLogs.url.staging) + '"'
-export HOSTED_LOGS_STAGING="http://test.dev.wise.vote/"
+export HOSTED_LOGS_STAGING="https://test.dev.wise.jblew.pl/"
 
 date="$(date +"%Y_%m_%d__%H_%M_%S")";
 echo "Generating uid"
