@@ -16,5 +16,7 @@ fi
 
 
 echo "Running healthcheck inside docker container"
-docker run -w "/app" -v "${WEBHOOK_FILE}:/slackWebhook.url:ro" -v "${DIR}/..:/app:ro" -v "${LOG_VOLUME}:/logs" "node:${NODE_VERSION}" /app/healthcheck/healthcheck-entrypoint.sh
+docker run -w "/app" -v "${WEBHOOK_FILE}:/slackWebhook.url:ro" -e "WISE_ENVIRONMENT_TYPE=${WISE_ENVIRONMENT_TYPE}" \
+     -v "${DIR}/..:/app:ro" -v "${LOG_VOLUME}:/logs" \
+     "node:${NODE_VERSION}" /app/healthcheck/healthcheck-entrypoint.sh
 echo "Healthcheck run finished"

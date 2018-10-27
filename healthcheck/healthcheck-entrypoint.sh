@@ -13,6 +13,14 @@ export HOSTED_LOGS_PRODUCTION="https://test.wise.vote/"
 #§ 'export HOSTED_LOGS_STAGING="' + d(data.config.test.healthcheck.hostedLogs.url.staging) + '"'
 export HOSTED_LOGS_STAGING="https://test.dev.wise.jblew.pl/"
 
+echo "Wise environment type: \"${WISE_ENVIRONMENT_TYPE}\""
+
+if [ $WISE_ENVIRONMENT_TYPE = "production" ]; then
+    export HOSTED_LOGS_URL="${HOSTED_LOGS_PRODUCTION}"
+else
+    export HOSTED_LOGS_URL="${HOSTED_LOGS_STAGING}"
+fi
+
 date="$(date +"%Y_%m_%d__%H_%M_%S")";
 echo "Generating uid"
 uid="$(od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')"
