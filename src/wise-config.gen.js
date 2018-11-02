@@ -10,7 +10,7 @@ export const data = {
       "code": "MIT",
     },
     "wise": {
-      "version": "2.2.5",
+      "version": "3.0.1",
       "homepage": "https://wise.vote/",
     },
     "steem": {
@@ -24,6 +24,7 @@ export const data = {
   "url": "https://rpc.buildteam.io",
   "get_block": true,
 } ],
+      "waitForNextHeadBlockDelayMs": 3100,
     },
     "witness": {
       "account": "wise-team",
@@ -62,9 +63,9 @@ export const data = {
       "maintainer": "The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>",
       "labels": {
         "domain": "vote.wise",
-        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"2.2.5\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-test\"" ],
+        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"3.0.1\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-test\"" ],
       },
-      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"2.2.5\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-test\"",
+      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"3.0.1\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-test\"",
     },
     "repository": {
       "github": {
@@ -135,6 +136,59 @@ export const data = {
         },
       },
     },
+    "vault": {
+      "url": "https://127.0.0.1:8200",
+      "backendFilePath": "/opt/wise/vault/Vaultfile",
+      "docker": {
+        "services": {
+          "vault": {
+            "name": "vault",
+            "container": "wise-vault",
+            "image": "wise/vault",
+          },
+        },
+      },
+      "unseal": {
+        "secret_shares": 4,
+        "secret_threshold": 2,
+      },
+      "auths": {
+        "AppRole": {
+          "type": "approle",
+          "description": "Docker service login",
+          "config": {},
+        },
+        "userpass": {
+          "type": "userpass",
+          "description": "User login",
+          "config": {},
+        },
+      },
+      "users": [ {
+  "username": "jblew",
+  "policies": [ "admin" ],
+}, {
+  "username": "noisy",
+  "policies": [ "admin" ],
+} ],
+      "policies": () => { throw new Error(" Only (data)=>{} or ()=>{} functions can be evaluated in generated config file "); },
+      "roles": () => { throw new Error(" Only (data)=>{} or ()=>{} functions can be evaluated in generated config file "); },
+      "secrets": {
+        "humanEnter": {
+          "steemConnectClientId": {
+            "description": "Steemconnect client_id",
+            "key": "/human/steemconnect/client_id",
+          },
+          "slackWebhookUrl": {
+            "description": "Slack Webhook URL",
+            "key": "/human/slack/webhook_url",
+          },
+        },
+        "generated": {
+          "sessionSalt": "/generated/session/salt",
+        },
+      },
+    },
     "communitation": {
       "chat": {
         "name": "discord",
@@ -153,7 +207,7 @@ export const data = {
       "pusher": {
         "requestConcurrencyPerNode": 3,
         "blockProcessingTimeoutMs": 9000,
-        "nextBlockDelayMs": 2900,
+        "nextBlockDelayMs": 3100,
       },
       "docker": {
         "services": {
@@ -222,7 +276,6 @@ export const data = {
       "visual": {
         "read": {
           "lastActivity": {
-            "numOfOpsToShow": 50,
             "trxLinkBase": "https://steemd.com/tx/{trx}",
             "articleLinkBase": "https://steemit.com/@{author}/{permlink}",
           },
@@ -230,10 +283,64 @@ export const data = {
       },
       "docker": {
         "services": {
-          "frontend": {
-            "name": "frontend",
-            "container": "wise-hub-frontend",
-            "image": "wise/wise-hub-frontend",
+          "nginx": {
+            "name": "nginx",
+            "container": "wise-hub-serve",
+          },
+          "redis": {
+            "name": "redis",
+            "container": "wise-hub-redis",
+          },
+          "api": {
+            "name": "api",
+            "container": "wise-hub-api",
+            "image": "wise/hub-api",
+            "appRole": {
+              "role": "wise-hub-api",
+              "policies": () => { throw new Error(" Only (data)=>{} or ()=>{} functions can be evaluated in generated config file "); },
+            },
+            "secrets": {
+              "appRoleId": "hub-api-approle-id",
+              "appRoleSecret": "hub-api-approle-secret",
+            },
+          },
+          "daemon": {
+            "name": "daemon",
+            "container": "wise-hub-daemon",
+            "image": "wise/hub-daemon",
+            "appRole": {
+              "role": "wise-hub-daemon",
+              "policies": () => { throw new Error(" Only (data)=>{} or ()=>{} functions can be evaluated in generated config file "); },
+            },
+            "secrets": {
+              "appRoleId": "hub-daemon-approle-id",
+              "appRoleSecret": "hub-daemon-approle-secret",
+            },
+          },
+        },
+      },
+      "vault": {
+        "secrets": {},
+        "policies": {
+          "api": {
+            "name": "wise-hub-api",
+            "policy": "
+                    # Manage hub/public secrets
+                    path "secret/hub/public/*"
+                    {
+                      capabilities = ["create", "read", "update", "delete", "list"]
+                    }
+                    ",
+          },
+          "daemon": {
+            "name": "wise-hub-daemon",
+            "policy": "
+                    # Manage hub/public secrets
+                    path "secret/hub/public/*"
+                    {
+                      capabilities = ["create", "read", "update", "delete", "list"]
+                    }
+                    ",
           },
         },
       },
@@ -331,7 +438,7 @@ export const data = {
         "is_public": true,
         "is_disabled": false,
         "created_at": "2018-07-06T09:53:05.827Z",
-        "updated_at": "2018-10-16T15:00:15.365Z",
+        "updated_at": "2018-11-02T14:06:31.055Z",
       },
     },
   },
