@@ -10,7 +10,7 @@ export const data = {
       "code": "MIT",
     },
     "wise": {
-      "version": "3.0.1",
+      "version": "3.0.2",
       "homepage": "https://wise.vote/",
     },
     "steem": {
@@ -63,9 +63,9 @@ export const data = {
       "maintainer": "The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>",
       "labels": {
         "domain": "vote.wise",
-        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"3.0.1\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-test\"" ],
+        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"3.0.2\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-test\"" ],
       },
-      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"3.0.1\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-test\"",
+      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"3.0.2\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-test\"",
     },
     "repository": {
       "github": {
@@ -290,11 +290,12 @@ export const data = {
           "redis": {
             "name": "redis",
             "container": "wise-hub-redis",
+            "volume": "wise_hub_redis",
           },
           "api": {
             "name": "api",
             "container": "wise-hub-api",
-            "image": "wise/hub-api",
+            "image": "wise/hub-backend",
             "appRole": {
               "role": "wise-hub-api",
               "policies": () => { throw new Error(" Only (data)=>{} or ()=>{} functions can be evaluated in generated config file "); },
@@ -307,28 +308,35 @@ export const data = {
           "daemon": {
             "name": "daemon",
             "container": "wise-hub-daemon",
-            "image": "wise/hub-daemon",
+            "image": "wise/hub-backend",
+          },
+          "publisher": {
+            "name": "publisher",
+            "container": "wise-hub-publisher",
+            "image": "wise/hub-backend",
             "appRole": {
               "role": "wise-hub-daemon",
               "policies": () => { throw new Error(" Only (data)=>{} or ()=>{} functions can be evaluated in generated config file "); },
             },
             "secrets": {
-              "appRoleId": "hub-daemon-approle-id",
-              "appRoleSecret": "hub-daemon-approle-secret",
+              "appRoleId": "hub-publisher-approle-id",
+              "appRoleSecret": "hub-publisher-approle-secret",
             },
           },
         },
       },
       "vault": {
-        "secrets": {},
+        "secrets": {
+          "users": "/hub/steemconnect/users",
+        },
         "policies": {
           "api": {
             "name": "wise-hub-api",
-            "policy": "\n                    # Manage hub/public secrets\n                    path \"secret/hub/public/*\"\n                    {\n                      capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n                    }\n                    ",
+            "policy": () => { throw new Error(" Only (data)=>{} or ()=>{} functions can be evaluated in generated config file "); },
           },
-          "daemon": {
+          "publisher": {
             "name": "wise-hub-daemon",
-            "policy": "\n                    # Manage hub/public secrets\n                    path \"secret/hub/public/*\"\n                    {\n                      capabilities = [\"create\", \"read\", \"update\", \"delete\", \"list\"]\n                    }\n                    ",
+            "policy": () => { throw new Error(" Only (data)=>{} or ()=>{} functions can be evaluated in generated config file "); },
           },
         },
       },
@@ -385,6 +393,11 @@ export const data = {
   "checkBrokenLinks": false,
 } ],
     "steemconnect": {
+      "oauth2Settings": {
+        "baseAuthorizationUrl": "https://steemconnect.com/api/oauth2/authorize",
+        "tokenUrl": "https://steemconnect.com/api/oauth2/token",
+        "tokenRevocationUrl": "https://steemconnect.com/api/oauth2/token/revoke",
+      },
       "owner": {
         "account": "wise.vote",
         "profile": {
@@ -417,7 +430,7 @@ export const data = {
         "id": 493,
         "client_id": "wisevote.app",
         "owner": "wise.vote",
-        "redirect_uris": [ "https://wise.vote/voting-page/", "https://hub.wise.vote/", "http://localhost:8080/" ],
+        "redirect_uris": [ "https://wise.vote/voting-page/", "https://hub.wise.vote/api/auth/callback", "https://hub.dev.wise.jblew.pl/api/auth/callback", "http://localhost:8080/", "http://localhost:8080/api/auth/callback" ],
         "name": "WISE",
         "description": "Vote delegation system for STEEM blockchain: https://wise.vote/",
         "icon": "https://wise.vote/assets/wise-full-color-icon-128.png",
