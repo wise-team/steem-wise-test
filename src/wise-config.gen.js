@@ -394,7 +394,7 @@ export const data = {
 } ],
     "steemconnect": {
       "oauth2Settings": {
-        "baseAuthorizationUrl": "https://steemconnect.com/api/oauth2/authorize",
+        "baseAuthorizationUrl": "https://steemconnect.com/oauth2/authorize",
         "tokenUrl": "https://steemconnect.com/api/oauth2/token",
         "tokenRevocationUrl": "https://steemconnect.com/api/oauth2/token/revoke",
       },
@@ -439,7 +439,7 @@ export const data = {
         "is_public": true,
         "is_disabled": false,
         "created_at": "2018-07-06T09:53:05.827Z",
-        "updated_at": "2018-11-02T14:06:31.055Z",
+        "updated_at": "2018-11-03T13:10:36.467Z",
       },
     },
   },
