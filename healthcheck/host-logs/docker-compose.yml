@@ -3,6 +3,9 @@ version: "3"
 services:
   #§ d(data.config.test.healthcheck.docker.services.hostedLogs.name) + ':'
   wise_healthcheck_hosted_logs:
+    ports:
+      #§ '- ' + data.config.test.healthcheck.hostedLogs.port + ':80'
+      - 8097:80
     image: nginx
     #§ 'container_name: ' + data.config.test.healthcheck.docker.services.hostedLogs.container
     container_name: wise_healthcheck_hosted_logs
