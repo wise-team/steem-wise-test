@@ -10,7 +10,7 @@ export const data = {
       "code": "MIT",
     },
     "wise": {
-      "version": "3.0.5",
+      "version": "3.0.6-rc2",
       "homepage": "https://wise.vote/",
     },
     "steem": {
@@ -40,7 +40,7 @@ export const data = {
       "steem": {
         "account": "wise-team",
       },
-      "securityEmail": "jedrzejblew@gmail.com",
+      "securityEmail": "contact@wiseteam.io",
     },
     "environments": {
       "production": {
@@ -69,12 +69,12 @@ export const data = {
     },
     "docker": {
       "imageHostname": "wise",
-      "maintainer": "The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>",
+      "maintainer": "The Wise Team (https://wise-team.io/) <contact@wiseteam.io>",
       "labels": {
         "domain": "vote.wise",
-        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"3.0.5\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-test\"" ],
+        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <contact@wiseteam.io>\"", () => "vote.wise.wise-version=\"3.0.6-rc2\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-test\"" ],
       },
-      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"3.0.5\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-test\"",
+      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <contact@wiseteam.io>\"\nLABEL vote.wise.wise-version=\"3.0.6-rc2\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-test\"",
     },
     "repository": {
       "github": {
@@ -83,8 +83,8 @@ export const data = {
       "readme": {
         "badges": [ () => "[object Object]", () => "[object Object]", () => "[object Object]", () => "[object Object]" ],
         "generateDefaultBadges": () => "\n[![License](https://img.shields.io/github/license/wise-team/steem-wise-test.svg?style=flat-square)](https://github.com/wise-team/steem-wise-test/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Chat](https://img.shields.io/badge/chat%20on%20discord-6b11ff.svg?style=flat-square)](https://discordapp.com/invite/CwxQDbG) [![Wise operations count](https://img.shields.io/badge/dynamic/json.svg?label=wise%20operations%20count&url=https%3A%2F%2Fsql.wise.vote%2Foperations%3Fselect%3Dcount&query=%24%5B0%5D.count&colorB=blue&style=flat-square)](https://sql.wise.vote/operations?select=moment,delegator,voter,operation_type&order=moment.desc)\n",
-        "generateHelpUsMd": () => "\n## Contribute to steem Wise\n\nWe welcome warmly:\n\n- Bug reports via [issues](https://github.com/wise-team/steem-wise-test).\n- Enhancement requests via via [issues](https://github.com/wise-team/steem-wise-test/issues).\n- [Pull requests](https://github.com/wise-team/steem-wise-test/pulls)\n- Security reports to _jedrzejblew@gmail.com_.\n\n**Before** contributing please **read [Wise CONTRIBUTING guide](https://github.com/wise-team/steem-wise-core/blob/master/CONTRIBUTING.md)**.\n\nThank you for developing WISE together!\n\n\n\n## Like the project? Let @wise-team become your favourite witness!\n\nIf you use & appreciate our software — you can easily support us. Just vote for \"wise-team\" to become you one of your witnesses. You can do it here: [https://steemit.com/~witnesses](https://steemit.com/~witnesses).\n\n",
-        "generateHelpMd": () => "\n## Where to get help?\n\n- Feel free to talk with us on our chat: [https://discordapp.com/invite/CwxQDbG](https://discordapp.com/invite/CwxQDbG) .\n- You can read [The Wise Manual](https://docs.wise.vote/introduction)\n- You can also contact Jędrzej at jedrzejblew@gmail.com (if you think that you found a security issue, please contact me quickly).\n\nYou can also ask questions as issues in appropriate repository: See [issues for this repository](https://github.com/wise-team/steem-wise-test/issues).\n\n",
+        "generateHelpUsMd": () => "\n## Contribute to steem Wise\n\nWe welcome warmly:\n\n- Bug reports via [issues](https://github.com/wise-team/steem-wise-test).\n- Enhancement requests via via [issues](https://github.com/wise-team/steem-wise-test/issues).\n- [Pull requests](https://github.com/wise-team/steem-wise-test/pulls)\n- Security reports to _contact@wiseteam.io_.\n\n**Before** contributing please **read [Wise CONTRIBUTING guide](https://github.com/wise-team/steem-wise-core/blob/master/CONTRIBUTING.md)**.\n\nThank you for developing WISE together!\n\n\n\n## Like the project? Let @wise-team become your favourite witness!\n\nIf you use & appreciate our software — you can easily support us. Just vote for \"wise-team\" to become you one of your witnesses. You can do it here: [https://steemit.com/~witnesses](https://steemit.com/~witnesses).\n\n",
+        "generateHelpMd": () => "\n## Where to get help?\n\n- Feel free to talk with us on our chat: [https://discordapp.com/invite/CwxQDbG](https://discordapp.com/invite/CwxQDbG) .\n- You can read [The Wise Manual](https://docs.wise.vote/introduction)\n- You can also contact us at contact@wiseteam.io (if you think that you found a security issue, please contact us quickly).\n\nYou can also ask questions as issues in appropriate repository: See [issues for this repository](https://github.com/wise-team/steem-wise-test/issues).\n\n",
       },
       "repositories": {
         "core": {

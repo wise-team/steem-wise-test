@@ -25,7 +25,7 @@ export default function(config: Config, context: Context) {
                     expect(issues.incomplete_results).to.be.false;
                     expect(issues.total_count).to.be.gte(0);
                     expect(issues.items).to.be.an("array").with.length.gte(0);
-                    expect(issues.items).to.be.an("array").with.length.gte(issues.total_count * 0.75 /* this is strange */);
+                    expect(issues.items).to.be.an("array").with.length.gte(issues.total_count * 0.5 /* this is strange */);
                 });
 
                it("Has no open and unassigned issues/pulls", () => {
