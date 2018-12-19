@@ -1,6 +1,6 @@
 {
   "name": "steem-wise-test",
-  "version": "3.0.3",
+  "version": "3.1.0-rc.1",
   "description": "System tests for steem wise",
   "directories": {},
   "engines": {
@@ -32,7 +32,7 @@
     "mocha": "^5.2.0",
     "npm": "^6.4.1",
     "steem": "^0.7.2",
-    "steem-wise-core": "^3.0.3",
+    "steem-wise-core": "^3.1.0-rc.1",
     "@types/steem-js-alpha": "https://github.com/wise-team/types-for-steem-js/raw/master/bin/types-steem-js-alpha-latest.tgz",
     "tar-fs": "^1.16.3",
     "ts-node": "^6.2.0",
