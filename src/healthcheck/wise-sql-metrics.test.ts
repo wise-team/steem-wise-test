@@ -75,7 +75,7 @@ export default function(config: Config, context: Context) {
             expect(confirmVotes.length).to.be.gte(voteorders.length * 0.6);
         });
 
-        it("Sql endpoint hosts swagger specs", async () => {
+        /*it("Sql endpoint hosts swagger specs", async () => {
             const result = await axios.get(endpoint);
             const swaggerSpecs: any = result.data;
 
@@ -88,9 +88,9 @@ export default function(config: Config, context: Context) {
             expect(swaggerSpecs.definitions.last_confirmation.properties).to.include.all.keys("id", "block_num", "transaction_num", "transaction_id", "timestamp", "voter", "delegator", "operation_type", "json_str");
             expect(swaggerSpecs.definitions.operations.properties).to.include.all.keys("id", "block_num", "transaction_num", "transaction_id", "timestamp", "voter", "delegator", "operation_type", "json_str");
             expect(swaggerSpecs.definitions.properties.properties).to.include.all.keys("key", "value");
-        });
+        });*/
 
-        it("Sql endpoint hosts swagger UI that points correctly to the api", async () => {
+        it.skip("Sql endpoint hosts swagger UI that points correctly to the api", async () => {
             const resp = await axios.get(endpoint + "doc", { responseType: "text" });
             expect(resp.data.indexOf("id=\"swagger-ui\"") !== -1).to.be.true;
         });

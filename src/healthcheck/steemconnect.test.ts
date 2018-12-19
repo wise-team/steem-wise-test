@@ -66,16 +66,22 @@ export default function(config: Config, context: Context) {
            it("is voting for our witness", () => expect(ownerAccount.witness_votes).is.an("array").that.includes(wise.config.witness.account));
         });
 
-        describe ("Steemconnect app account", () => {
-            const appAccountName = wise.config.steemconnect.app.account;
+        [ "staging", "production" ].forEach((envType: string) => describe(`Steemconnect ${envType} app account`, () => {
+            const appObj = (wise.config.steemconnect.app as any)[envType].app;
+            const appAccountName = appObj.account;
             let appAccount: any = undefined;
-            before(async () => appAccount = (await steem.getAccountsAsync([ appAccountName ]))[0]);
+            before(async () => {
+                const resp = await steem.getAccountsAsync([ appAccountName ]);
+                // console.log(JSON.stringify(resp[0], undefined, 2));
+                appAccount = resp[0];
+                if (!appAccount) throw new Error("Undefined appAccount response for @" + appAccountName);
+            });
 
-            it ("had owner never updated", () => expect(appAccount.last_owner_update).is.equal(wise.config.steemconnect.app.last_owner_update));
+            it ("had owner never updated", () => expect(appAccount.last_owner_update).is.equal(appObj.last_owner_update));
 
-            it ("has not been silently updated", () => expect(appAccount.last_account_update).is.equal(wise.config.steemconnect.app.last_account_update));
+            it ("has not been silently updated", () => expect(appAccount.last_account_update).is.equal(appObj.last_account_update));
 
-            it ("has proper recovery_account", () => expect(appAccount.recovery_account).is.equal(wise.config.steemconnect.app.recovery_account));
+            it ("has proper recovery_account", () => expect(appAccount.recovery_account).is.equal(appObj.recovery_account));
 
             it ("has proper owner account in metadata", () => {
                 const metadata = JSON.parse(appAccount.json_metadata);
@@ -88,7 +94,7 @@ export default function(config: Config, context: Context) {
                 expect(appAccount.owner.account_auths[0][0]).is.equal("steemconnect");
                 expect(appAccount.owner.account_auths[0][1]).is.equal(1);
                 expect(appAccount.owner.key_auths).is.an("array").with.length(1);
-                expect(appAccount.owner.key_auths[0][0]).is.equal(wise.config.steemconnect.app.keys.owner);
+                expect(appAccount.owner.key_auths[0][0]).is.equal(appObj.keys.owner);
                 expect(appAccount.owner.key_auths[0][1]).is.equal(1);
 
                 expect(appAccount.active.weight_threshold).is.equal(1);
@@ -96,7 +102,7 @@ export default function(config: Config, context: Context) {
                 expect(appAccount.active.account_auths[0][0]).is.equal("steemconnect");
                 expect(appAccount.active.account_auths[0][1]).is.equal(1);
                 expect(appAccount.active.key_auths).is.an("array").with.length(1);
-                expect(appAccount.active.key_auths[0][0]).is.equal(wise.config.steemconnect.app.keys.active);
+                expect(appAccount.active.key_auths[0][0]).is.equal(appObj.keys.active);
                 expect(appAccount.active.key_auths[0][1]).is.equal(1);
 
                 expect(appAccount.posting.weight_threshold).is.equal(1);
@@ -104,23 +110,24 @@ export default function(config: Config, context: Context) {
                 expect(appAccount.posting.account_auths[0][0]).is.equal("steemconnect");
                 expect(appAccount.posting.account_auths[0][1]).is.equal(1);
                 expect(appAccount.posting.key_auths).is.an("array").with.length(1);
-                expect(appAccount.posting.key_auths[0][0]).is.equal(wise.config.steemconnect.app.keys.posting);
+                expect(appAccount.posting.key_auths[0][0]).is.equal(appObj.keys.posting);
                 expect(appAccount.posting.key_auths[0][1]).is.equal(1);
 
-                expect(appAccount.memo_key).is.equal(wise.config.steemconnect.app.keys.memo);
+                expect(appAccount.memo_key).is.equal(appObj.keys.memo);
             });
 
            it("has never posted", () => expect(appAccount.last_post).is.equal("1970-01-01T00:00:00"));
 
            it("has never voted", () => expect(appAccount.last_vote_time).is.equal("1970-01-01T00:00:00"));
-        });
+        }));
 
-        describe ("Steemconnect settings", () => {
+        [ "staging", "production" ].forEach((envType: string) => describe (`Steemconnect settings for ${envType} app`, () => {
+            const settingsObj: any = (wise.config.steemconnect.app as any)[envType].settings;
            it("Steemconnect settings match those in config at wise.config.steemconnect.settings", async () => {
-                const result: { data: any } = await axios.get("https://steemconnect.com/api/apps/@" + wise.config.steemconnect.settings.client_id);
+                const result: { data: any } = await axios.get("https://steemconnect.com/api/apps/@" + settingsObj.client_id);
                 const settings = result.data;
-                expect(settings).to.deep.equal(wise.config.steemconnect.settings);
+                expect(settings).to.deep.equal(settingsObj);
             });
-        });
+        }));
     });
 }
