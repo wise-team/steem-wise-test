@@ -11,7 +11,7 @@ echo "Clone ok"
 export HOSTED_LOGS_PRODUCTION="https://test.wise.vote/"
 
 #§ 'export HOSTED_LOGS_STAGING="' + d(data.config.test.healthcheck.hostedLogs.url.staging) + '"'
-export HOSTED_LOGS_STAGING="https://test.dev.wise.jblew.pl/"
+export HOSTED_LOGS_STAGING="https://test.dev.wise.vote/"
 
 echo "Wise environment type: \"${WISE_ENVIRONMENT_TYPE}\""
 
