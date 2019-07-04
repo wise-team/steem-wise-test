@@ -37,7 +37,8 @@
     "tar-fs": "^1.16.3",
     "ts-node": "^6.2.0",
     "tslint": "^5.11.0",
-    "typescript": "^2.9.2"
+    "typescript": "^2.9.2",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "husky": "^0.14.3"
@@ -50,7 +51,9 @@
     "healthcheck": "ts-node src/healthcheck.ts",
     "healthcheck-compare-notify": "ts-node healthcheck/compare-and-notify.ts",
     "testall": "npm run check && npm run tslint && mocha -r ts-node/register src/*/entrance.ts",
-    "commitmsg": "commitlint -E GIT_PARAMS"
+    "commitmsg": "commitlint -E GIT_PARAMS",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "commitlint": {
     "extends": [
@@ -74,5 +77,6 @@
   "bugs": {
     "url": "https://github.com/wise-team/steem-wise-test/issues"
   },
-  "homepage": "https://wise.vote/"
+  "homepage": "https://wise.vote/",
+  "snyk": true
 }
